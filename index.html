@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GiftHub — Encuentra el regalo perfecto</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <header id="site-header"></header>
+  <nav id="site-nav"></nav>
+
+  <main id="app"></main>
+
+  <footer id="site-footer"></footer>
+
+  <div class="help-fab">?</div>
+  <div class="toast" id="toast"></div>
+
+  <!-- Datos y utilidades compartidas -->
+  <script src="js/data.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/auth-api.js"></script>
+  <script src="js/auth-store.js"></script>
+
+  <!-- Vistas -->
+  <script src="js/views/home.js"></script>
+  <script src="js/views/product.js"></script>
+  <script src="js/views/register.js"></script>
+  <script src="js/views/login.js"></script>
+  <script src="js/views/forgot-password.js"></script>
+
+  <!-- Punto de entrada: arma el chrome y arranca el router -->
+  <script src="js/main.js"></script>
+
+</body>
+</html>
