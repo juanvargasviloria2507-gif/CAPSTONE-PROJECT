@@ -1020,3 +1020,43 @@ PRODUCT DETAIL
   }
   
   }
+
+.favorite-btn svg,
+.favorite-detail-btn svg,
+.favorites-btn svg,
+.favorites-empty-heart svg{
+
+    width:22px;
+    height:22px;
+
+}
+
+/* ==========================
+   FIND MY FIT BUTTON
+========================== */
+
+.find-fit-btn{
+
+  margin-left:20px;
+
+  background:#111;
+
+  color:#fff !important;
+
+  padding:10px 22px;
+
+  border-radius:999px;
+
+  font-weight:600;
+
+  transition:.3s;
+
+}
+
+.find-fit-btn:hover{
+
+  background:#3a3a3a;
+
+  transform:translateY(-2px);
+
+}

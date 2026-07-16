@@ -3,6 +3,7 @@
    Shopping page for The Ideal Option
 ====================================================== */
 
+
 function renderHome(container, params) {
 
   var categorySlug = (params && params.category) || "";
@@ -61,7 +62,25 @@ function renderHome(container, params) {
 
       '</section>';
 
+      grid.querySelectorAll("[data-favorite]").forEach(function(btn){
 
+        btn.addEventListener("click", function(e){
+    
+            e.stopPropagation();
+    
+            var product = findProductById(
+    
+                btn.getAttribute("data-favorite")
+    
+            );
+    
+            FavoritesStore.toggle(product);
+    
+            renderHome(container, params);
+    
+        });
+    
+    });
 
   var grid = container.querySelector("#product-grid");
 
@@ -86,7 +105,25 @@ function renderHome(container, params) {
       grid.innerHTML = filtered.map(renderProductCard).join("");
 
   }
+  grid.querySelectorAll("[data-favorite]").forEach(function (btn) {
 
+    btn.addEventListener("click", function (e) {
+
+        e.stopPropagation();
+
+        var product = findProductById(
+
+            btn.getAttribute("data-favorite")
+
+        );
+
+        FavoritesStore.toggle(product);
+
+        renderHome(container, params);
+
+    });
+
+});
 
 
   document.getElementById("shop-now-btn")
@@ -152,99 +189,71 @@ function renderHome(container, params) {
 ====================================================== */
 
 function renderProductCard(product) {
+    function renderProductCard(p) {
 
-  return (
-
-      '<div class="product-card">' +
-
-          '<div class="product-thumb" data-goto-product="' + product.id + '">' +
-
-              '<img src="' + product.image + '" alt="' + product.name + '">' +
-
-          '</div>' +
-
-          '<div class="product-info">' +
-
-              '<h3 class="product-name">' +
-
-                  product.name +
-
-              '</h3>' +
-
-              '<p class="product-desc">' +
-
-                  product.desc +
-
-              '</p>' +
-
-              '<div class="product-rating">' +
-
-                  '<span class="stars">' +
-
-                      renderStars(product.rating) +
-
-                  '</span>' +
-
-                  '<span>' +
-
-                      product.rating +
-
-                  '</span>' +
-
-              '</div>' +
-
-              '<div class="product-details">' +
-
-                  '<span><strong>Fit:</strong> ' +
-
-                      product.fit +
-
-                  '</span>' +
-
-                  '<span><strong>Color:</strong> ' +
-
-                      product.color +
-
-                  '</span>' +
-
-              '</div>' +
-
-              '<div class="sizes">' +
-
-                  product.sizes.map(function(size){
-
-                      return '<span class="size">' + size + '</span>';
-
-                  }).join("") +
-
-              '</div>' +
-
-              '<div class="product-footer">' +
-
-                  '<span class="product-price">$' +
-
-                      product.price.toFixed(2) +
-
-                  '</span>' +
-
-                  '<button class="add-to-cart" data-add-to-cart="' +
-
-                      product.id +
-
-                  '">' +
-
-                      ICONS.cart +
-
-                      ' Add to Cart' +
-
-                  '</button>' +
-
-              '</div>' +
-
-          '</div>' +
-
-      '</div>'
-
-  );
-
+        var favorite = FavoritesStore.isFavorite(p.id);
+    
+        return (
+    
+            '<div class="product-card">' +
+    
+                '<button class="favorite-btn ' + (favorite ? 'active' : '') + '" data-favorite="' + p.id + '">' +
+    
+                (favorite ? ICONS.heartFilled : ICONS.heart) +
+    
+                '</button>' +
+    
+                '<div class="product-thumb photo" data-goto-product="' + p.id + '">' +
+    
+                    '<img src="' + p.image + '" alt="' + p.name + '">' +
+    
+                '</div>' +
+    
+                '<div class="product-name" data-goto-product="' + p.id + '">' +
+    
+                    p.name +
+    
+                '</div>' +
+    
+                '<div class="product-desc">' +
+    
+                    p.desc +
+    
+                '</div>' +
+    
+                '<div class="product-rating">' +
+    
+                    '<span class="stars">' +
+    
+                        renderStars(p.rating) +
+    
+                    '</span>' +
+    
+                    '<span>(' + p.rating + ')</span>' +
+    
+                '</div>' +
+    
+                '<div class="product-meta">' +
+    
+                    '<span class="product-price">$' +
+    
+                        p.price.toFixed(2) +
+    
+                    '</span>' +
+    
+                '</div>' +
+    
+                '<button class="add-to-cart" data-add-to-cart="' + p.id + '">' +
+    
+                    ICONS.cart +
+    
+                    ' Add to Cart' +
+    
+                '</button>' +
+    
+            '</div>'
+    
+        );
+    
+    }
 }

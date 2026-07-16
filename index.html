@@ -1,39 +1,56 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>The Ideal Option</title>
+
 <link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/favorites.css">
+<link rel="stylesheet" href="css/questionnaire.css">
+
 </head>
+
 <body>
 
-  <header id="site-header"></header>
-  <nav id="site-nav"></nav>
+<header id="site-header"></header>
 
-  <main id="app"></main>
+<nav id="site-nav"></nav>
 
-  <footer id="site-footer"></footer>
+<main id="app"></main>
 
-  <div class="help-fab">?</div>
-  <div class="toast" id="toast"></div>
+<footer id="site-footer"></footer>
 
-  <!-- Datos y utilidades compartidas -->
-  <script src="js/data.js"></script>
-  <script src="js/cart.js"></script>
-  <script src="js/router.js"></script>
-  <script src="js/auth-api.js"></script>
-  <script src="js/auth-store.js"></script>
+<div class="help-fab">?</div>
 
-  <!-- Vistas -->
-  <script src="js/views/home.js"></script>
-  <script src="js/views/product.js"></script>
-  <script src="js/views/register.js"></script>
-  <script src="js/views/login.js"></script>
-  <script src="js/views/forgot-password.js"></script>
+<div class="toast" id="toast"></div>
 
-  <!-- Punto de entrada: arma el chrome y arranca el router -->
-  <script src="js/main.js"></script>
+<!-- Shared Scripts -->
+
+<script src="js/data.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/router.js"></script>
+<script src="js/auth-api.js"></script>
+<script src="js/auth-store.js"></script>
+<script src="js/favorites-store.js"></script>
+<script src="js/questionnaire-api.js"></script>
+
+<!-- Views -->
+
+<script src="js/views/home.js"></script>
+<script src="js/views/product.js"></script>
+<script src="js/views/favorites.js"></script>
+<script src="js/views/questionnaire.js"></script>
+<script src="js/views/register.js"></script>
+<script src="js/views/login.js"></script>
+<script src="js/views/forgot-password.js"></script>
+
+<!-- Main -->
+
+<script src="js/main.js"></script>
 
 </body>
 </html>

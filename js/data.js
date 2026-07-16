@@ -19,7 +19,9 @@ var ICONS = {
   eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>',
   eyeOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"></path><path d="M10.6 5.2A10.6 10.6 0 0 1 12 5c6.4 0 10 7 10 7a15.6 15.6 0 0 1-3.4 4.3M6.6 6.6C3.7 8.4 2 12 2 12s3.6 7 10 7a9.6 9.6 0 0 0 4.4-1"></path><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path></svg>',
   google: '<svg viewBox="0 0 24 24"><path fill="#EA4335" d="M12 10.2v3.9h5.5c-.24 1.4-1.7 4.1-5.5 4.1-3.3 0-6-2.7-6-6.2s2.7-6.2 6-6.2c1.9 0 3.1.8 3.9 1.5l2.6-2.5C17 3.1 14.7 2 12 2 6.9 2 2.8 6.1 2.8 11.2S6.9 20.4 12 20.4c5.3 0 8.6-3.7 8.6-8.9 0-.6-.06-1-.14-1.4H12Z"></path></svg>',
-  apple: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.1 3.5c.1 1-.3 2-.9 2.7-.6.7-1.6 1.3-2.6 1.2-.1-1 .4-2 .9-2.6.6-.7 1.7-1.2 2.6-1.3ZM19.7 17c-.5 1.1-.7 1.6-1.4 2.6-.9 1.4-2.2 3.1-3.8 3.1-1.4 0-1.8-.9-3.7-.9s-2.4.9-3.7.9c-1.6 0-2.8-1.5-3.7-2.9C1 16.8 1.8 12.1 4.5 9.7c1.3-1.2 2.7-1.9 4-1.9 1.4 0 2.3 1 3.6 1s2-.9 3.7-.9c1.2 0 2.5.6 3.4 1.7-3 1.7-2.5 5.9.5 7.4Z"></path></svg>'
+  apple: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.1 3.5c.1 1-.3 2-.9 2.7-.6.7-1.6 1.3-2.6 1.2-.1-1 .4-2 .9-2.6.6-.7 1.7-1.2 2.6-1.3ZM19.7 17c-.5 1.1-.7 1.6-1.4 2.6-.9 1.4-2.2 3.1-3.8 3.1-1.4 0-1.8-.9-3.7-.9s-2.4.9-3.7.9c-1.6 0-2.8-1.5-3.7-2.9C1 16.8 1.8 12.1 4.5 9.7c1.3-1.2 2.7-1.9 4-1.9 1.4 0 2.3 1 3.6 1s2-.9 3.7-.9c1.2 0 2.5.6 3.4 1.7-3 1.7-2.5 5.9.5 7.4Z"></path></svg>',
+heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 1 0-7.6 7.6L12 21l8.8-8.8a5.4 5.4 0 0 0 0-7.6Z"/></svg>',
+heartFilled:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21 3.2 12.2a5.4 5.4 0 1 1 7.6-7.6L12 5.8l1.2-1.2a5.4 5.4 0 1 1 7.6 7.6L12 21Z"/></svg>'
 };
 
 /* =====================================================
@@ -32,7 +34,8 @@ var CATEGORIES = [
   { label: "Mom Fit", slug: "mom-fit" },
   { label: "Straight", slug: "straight" },
   { label: "Wide Leg", slug: "wide-leg" },
-  { label: "Bootcut", slug: "bootcut" }
+  { label: "Bootcut", slug: "bootcut" },
+  { label: "Favorites", slug: "favorites" }
 ];
 
 var TAG_LABELS = {
@@ -56,11 +59,12 @@ var PRODUCTS = [
     rating: 4.8,
     price: 69.99,
     tag: "skinny",
-    color: "Black",
+    color: "black",
     fit: "Skinny",
     sizes: ["XS","S","M","L","XL"],
     image: "assets/products/skinny-black.jpg",
-    photo: true
+    photo: true,
+    style: "trendy"
 },
 
 {
@@ -70,11 +74,12 @@ var PRODUCTS = [
     rating: 4.9,
     price: 79.99,
     tag: "mom-fit",
-    color: "Light Blue",
+    color: "dark",
     fit: "Mom Fit",
     sizes: ["XS","S","M","L"],
     image: "assets/products/mom-light.jpg",
-    photo: true
+    photo: true,
+    style: "trendy"
 },
 
 {
@@ -84,11 +89,12 @@ var PRODUCTS = [
     rating: 4.7,
     price: 74.99,
     tag: "straight",
-    color: "Blue",
+    color: "ligth",
     fit: "Straight",
     sizes: ["S","M","L","XL"],
     image: "assets/products/straight-blue.jpg",
-    photo: true
+    photo: true,
+    style: "comfort"
 },
 
 {
@@ -98,11 +104,12 @@ var PRODUCTS = [
     rating: 4.9,
     price: 84.99,
     tag: "wide-leg",
-    color: "Dark Blue",
+    color: "dark",
     fit: "Wide Leg",
     sizes: ["XS","S","M","L"],
     image: "assets/products/wide-dark.jpg",
-    photo: true
+    photo: true,
+    style: "comfort"
 },
 
 {
@@ -112,11 +119,12 @@ var PRODUCTS = [
     rating: 4.6,
     price: 72.99,
     tag: "bootcut",
-    color: "Indigo",
+    color: "black",
     fit: "Bootcut",
     sizes: ["S","M","L","XL"],
     image: "assets/products/bootcut.jpg",
-    photo: true
+    photo: true,
+    style: "everyday"
 },
 
 {
@@ -126,11 +134,12 @@ var PRODUCTS = [
     rating: 4.8,
     price: 67.99,
     tag: "skinny",
-    color: "White",
+    color: "dark",
     fit: "Skinny",
     sizes: ["XS","S","M","L"],
     image: "assets/products/skinny-white.jpg",
-    photo: true
+    photo: true,
+    style: "everyday"
 },
 
 {
@@ -140,11 +149,12 @@ var PRODUCTS = [
     rating: 4.7,
     price: 81.99,
     tag: "mom-fit",
-    color: "Dark Blue",
+    color: "light",
     fit: "Mom Fit",
     sizes: ["XS","S","M","L"],
     image: "assets/products/mom-dark.jpg",
-    photo: true
+    photo: true,
+    style: "premium"
 },
 
 {
@@ -154,11 +164,12 @@ var PRODUCTS = [
     rating: 4.9,
     price: 76.99,
     tag: "straight",
-    color: "Black",
+    color: "black",
     fit: "Straight",
     sizes: ["S","M","L","XL"],
     image: "assets/products/straight-black.jpg",
-    photo: true
+    photo: true,
+    style: "premium"
 },
 
 {
@@ -168,11 +179,12 @@ var PRODUCTS = [
     rating: 4.8,
     price: 86.99,
     tag: "wide-leg",
-    color: "Light Blue",
+    color: "light",
     fit: "Wide Leg",
     sizes: ["XS","S","M","L"],
     image: "assets/products/wide-light.jpg",
-    photo: true
+    photo: true,
+    style: "premium"
 },
 
 {
@@ -182,11 +194,12 @@ var PRODUCTS = [
     rating: 4.7,
     price: 75.99,
     tag: "bootcut",
-    color: "Dark Blue",
+    color: "dark",
     fit: "Bootcut",
     sizes: ["S","M","L","XL"],
     image: "assets/products/bootcut-dark.jpg",
-    photo: true
+    photo: true,
+    style: "everyday"
 },
 
 {
@@ -196,11 +209,12 @@ var PRODUCTS = [
     rating: 4.8,
     price: 79.99,
     tag: "straight",
-    color: "Medium Blue",
+    color: "light",
     fit: "Relaxed",
     sizes: ["S","M","L","XL"],
     image: "assets/products/relaxed.jpg",
-    photo: true
+    photo: true,
+    style: "everyday"
 },
 
 {
@@ -210,11 +224,12 @@ var PRODUCTS = [
     rating: 5.0,
     price: 89.99,
     tag: "mom-fit",
-    color: "Vintage Blue",
+    color: "black",
     fit: "Vintage",
     sizes: ["XS","S","M","L"],
     image: "assets/products/vintage.jpg",
-    photo: true
+    photo: true,
+    style: "trendy"
 }
 
 ];
@@ -241,4 +256,28 @@ function renderStars(rating) {
     }
 
     return stars;
+}
+
+function getProductsByAnswers(answers){
+
+    return PRODUCTS.filter(function(product){
+
+        var fitMatch =
+            answers.fit === "skinny" && product.tag === "skinny" ||
+            answers.fit === "wide" && product.tag === "wide-leg" ||
+            answers.fit === "flare" && product.tag === "bootcut" ||
+            answers.fit === "shorts";
+
+        var colorMatch =
+            answers.color === "any" ||
+            product.denim === answers.color;
+
+        var styleMatch =
+            !product.style ||
+            product.style === answers.style;
+
+        return fitMatch && colorMatch && styleMatch;
+
+    });
+
 }

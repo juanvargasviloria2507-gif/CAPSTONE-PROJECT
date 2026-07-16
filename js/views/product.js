@@ -108,13 +108,27 @@ function renderProduct(container, params) {
 
                   '</div>' +
 
-                  '<button class="add-to-cart detail-cart" id="detail-cart">' +
+                  '<div class="detail-actions">' +
 
-                      ICONS.cart +
+    '<button class="favorite-detail-btn ' +
 
-                      ' Add to Cart' +
+    (FavoritesStore.isFavorite(product.id) ? ICONS.heartFilled + ' Saved': ICONS.heart + ' Save to Wishlist')+
 
-                  '</button>' +
+        '" id="favorite-detail">' +
+
+        (FavoritesStore.isFavorite(product.id) ? '❤ Remove Favorite' : '♡ Add to Favorites') +
+
+    '</button>' +
+
+    '<button class="add-to-cart detail-cart" id="detail-cart">' +
+
+        ICONS.cart +
+
+        ' Add to Cart' +
+
+    '</button>' +
+
+'</div>' +
 
               '</div>' +
 
@@ -148,13 +162,26 @@ function renderProduct(container, params) {
 
           showToast(product.name + " added to cart");
 
-      });
+          document
+          .getElementById("favorite-detail")
+          .addEventListener("click", function () {
+      
+              FavoritesStore.toggle(product);
+      
+              renderProduct(container, params);
+      
+              if (FavoritesStore.isFavorite(product.id)) {
+      
+                  showToast("Added to Favorites");
+      
+              } else {
+      
+                  showToast("Removed from Favorites");
+      
+              }
+      
+          });
+        });
 
 }
-document
-    .getElementById("favorite-btn")
-    .addEventListener("click", function () {
-
-        showToast(product.name + " added to favorites");
-
-    });
+;

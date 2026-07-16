@@ -50,13 +50,14 @@ function renderHeader() {
 
     '<div class="auth-area" id="auth-area"></div>' +
 
-    '<div class="cart-btn" id="cart-btn">' +
+'<div class="favorites-btn" id="favorites-btn">' +ICONS.heart +
+    '<span class="favorites-badge" id="favorites-badge" style="display:none">0</span>' +
+'</div>' +
 
-      ICONS.cart +
-
-      '<span class="cart-badge" id="cart-badge" style="display:none">0</span>' +
-
-    '</div>';
+'<div class="cart-btn" id="cart-btn">' +
+    ICONS.cart +
+    '<span class="cart-badge" id="cart-badge" style="display:none">0</span>' +
+'</div>';
 
 
 
@@ -66,7 +67,11 @@ function renderHeader() {
 
   });
 
+  header.querySelector("#favorites-btn").addEventListener("click", function(){
 
+    Router.navigate("/favorites");
+
+});
 
   header.querySelector("#search-input").addEventListener("keydown", function (e) {
 
@@ -80,7 +85,42 @@ function renderHeader() {
 
 
 
-  var badge = document.getElementById("cart-badge");
+/* CART */
+
+var cartBadge = header.querySelector("#cart-badge");
+
+function updateCartBadge(){
+
+    var count = CartStore.getCount();
+
+    cartBadge.textContent = count;
+
+    cartBadge.style.display = count > 0 ? "flex" : "none";
+
+}
+
+CartStore.subscribe(updateCartBadge);
+
+updateCartBadge();
+
+
+/* FAVORITES */
+
+var favoritesBadge = header.querySelector("#favorites-badge");
+
+function updateFavoritesBadge(){
+
+    var count = FavoritesStore.count();
+
+    favoritesBadge.textContent = count;
+
+    favoritesBadge.style.display = count > 0 ? "flex" : "none";
+
+}
+
+FavoritesStore.subscribe(updateFavoritesBadge);
+
+updateFavoritesBadge();;
 
 
 
@@ -418,47 +458,39 @@ NAVIGATION
 
 function renderNav(activeSlug) {
 
-  var nav = document.getElementById("site-nav");
+  var nav = document.getElementById('site-nav');
 
+  var categories = CATEGORIES.map(function (c) {
 
+    var isActive = (activeSlug || '') === c.slug;
+
+    var href = c.slug
+      ? '#/category/' + c.slug
+      : '#/';
+
+    return (
+      '<a class="' +
+      (isActive ? 'active' : '') +
+      '" href="' +
+      href +
+      '">' +
+      c.label +
+      '</a>'
+    );
+
+  }).join('');
 
   nav.innerHTML =
 
-    CATEGORIES.map(function (c) {
+      categories +
 
-      var active = (activeSlug || "") === c.slug;
+      '<a href="#/questionnaire" class="find-fit-btn">' +
 
-      var href = c.slug
+        '✨ Find My Fit' +
 
-        ? "#/category/" + c.slug
-
-        : "#/";
-
-
-
-      return (
-
-        '<a class="' +
-
-        (active ? "active" : "") +
-
-        '" href="' +
-
-        href +
-
-        '">' +
-
-        c.label +
-
-        "</a>"
-
-      );
-
-    }).join("");
+      '</a>';
 
 }
-
-
 
 function updateActiveNavFromHash() {
 
@@ -494,20 +526,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-  Router.register("/", renderHome);
-
-  Router.register("/category/:category", renderHome);
-
-  Router.register("/product/:id", renderProduct);
-
-  Router.register("/register", renderRegister);
-
-  Router.register("/login", renderLogin);
-
-  Router.register("/forgot-password", renderForgotPassword);
-
-
-
+  Router.register('/', renderHome);
+  Router.register('/category/:category', renderHome);
+  Router.register('/product/:id', renderProduct);
+  
+  Router.register('/favorites', renderFavorites);
+  Router.register('/questionnaire', renderQuestionnaire);
+  
+  Router.register('/register', renderRegister);
+  Router.register('/login', renderLogin);
+  Router.register('/forgot-password', renderForgotPassword);
+  
   Router.init(document.getElementById("app"));
 
 });
