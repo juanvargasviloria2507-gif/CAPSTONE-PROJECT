@@ -10,9 +10,14 @@ const app = express();
 
 app.use(express.json());
 
+app.use('/images', express.static('public/images'));
+
 // Conectar las rutas de autenticación (register y login)
 const authRoutes = require('./routes/auth.routes');
 app.use('/', authRoutes);
+
+const productsRoutes = require('./routes/products.routes');
+app.use('/', productsRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
