@@ -2,7 +2,7 @@
 
 ## Description
 
-This backend exposes the API for the Capstone project to handle user authentication, product catalog management, quiz-based recommendations, and favorites protected with JWT.
+This backend exposes the API for the Capstone project. It supports user registration and login, product listing, quiz-based recommendations, favorites, and product reviews.
 
 ## Technologies
 
@@ -33,7 +33,7 @@ npm install
 
 3. Create the database and the required tables in MySQL.
 
-Basic example:
+Example:
 ```sql
 CREATE DATABASE CAPSTONE_PROJECT;
 USE CAPSTONE_PROJECT;
@@ -78,9 +78,17 @@ CREATE TABLE favorites (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY unique_user_product (user_id, product_id)
 );
+
+CREATE TABLE reviews (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    rating INT NOT NULL,
+    comment TEXT NOT NULL
+);
 ```
 
-4. Create the `.env` file inside the `backend` folder with the connection and JWT variables:
+4. Create the `.env` file inside the `backend` folder with the connection and JWT settings:
 ```env
 DB_HOST=localhost
 DB_PORT=3306
@@ -97,9 +105,35 @@ JWT_SECRET=your_secret_key
 node src/index.js
 ```
 
-If the configuration is correct, the server will display something similar to:
+If everything is configured correctly, the server will start and print:
 ```bash
 server running on port 3000
+```
+
+## Project Structure
+
+```text
+backend/
+├── db.js
+├── package.json
+├── public/
+│   └── images/
+├── src/
+│   ├── controllers/
+│   │   ├── auth.controller.js
+│   │   ├── favorites.controller.js
+│   │   ├── products.controller.js
+│   │   ├── recommendation.controller.js
+│   │   └── reviews.controller.js
+│   ├── middlewares/
+│   │   └── auth.middlewares.js
+│   ├── routes/
+│   │   ├── auth.routes.js
+│   │   ├── favorites.routes.js
+│   │   ├── products.routes.js
+│   │   ├── recommendation.routes.js
+│   │   └── reviews.routes.js
+│   └── index.js
 ```
 
 ## Available Endpoints
@@ -156,12 +190,12 @@ Successful response (200):
 Returns all products.
 
 #### GET /products/:id
-Returns a product by its ID, including its sizes.
+Returns a product by its ID, including its available sizes.
 
 ### Recommendations
 
 #### POST /recommendations
-Receives quiz answers and returns product recommendations.
+Receives quiz answers and returns a list of recommended products.
 
 Body:
 ```json
@@ -190,12 +224,28 @@ Body:
 Removes a product from the authenticated user's favorites.
 
 #### GET /favorites
-Lists the authenticated user's favorite products.
+Returns the authenticated user's favorite products.
+
+### Reviews
+
+#### POST /products/:id/reviews
+Adds a review to a product. Requires authentication.
+
+Body:
+```json
+{
+  "rating": 5,
+  "comment": "Great product"
+}
+```
+
+#### GET /products/:id/reviews
+Returns all reviews for a specific product.
 
 ## Usage Notes
 
 Before testing the API, make sure that:
 - MySQL is running.
 - The `.env` file exists with the correct values.
-- The dependencies have been installed with `npm install`.
+- The dependencies were installed with `npm install`.
 - The required database and tables have been created.

@@ -25,6 +25,9 @@ app.use('/', recommendationRoutes);
 const favoritesRoutes = require('./routes/favorites.routes');
 app.use('/', favoritesRoutes);
 
+const reviewsRoutes = require('./routes/reviews.routes');
+app.use('/', reviewsRoutes);
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`server running on port ${PORT}`);
