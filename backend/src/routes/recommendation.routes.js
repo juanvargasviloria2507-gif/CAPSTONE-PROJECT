@@ -1,7 +1,7 @@
 /**
  * Project: Capstone Project Backend
  * File: recommendation.routes.js
- * Description: HU5 - Recommendation quiz endpoint.
+ * Description: Recommendation quiz endpoint.
  */
 
 const express = require('express');

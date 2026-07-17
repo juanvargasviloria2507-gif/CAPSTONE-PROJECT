@@ -1,7 +1,7 @@
 /**
  * Project: Capstone Project Backend
  * File: recommendation.controller.js
- * Description: HU5 - Business logic for the jeans recommendation engine.
+ * Description: Business logic for the jeans recommendation engine.
  * Queries the real `products` table (with fit_tag, color_tag, style_tag).
  */
 
