@@ -15,7 +15,8 @@ function renderHome(container, params) {
   container.innerHTML =
     '<section class="hero">' +
       '<div class="hero-copy">' +
-        '<h1>Find the perfect gift for every occasion</h1>' +
+        '<span class="hero-kicker">Handpicked, since forever</span>' +
+        '<h1>Find the perfect pants for every occasion</h1>' +
         '<p>Discover unique, thoughtfully chosen gifts that will make your loved ones smile. From personalized treasures to timeless classics, we have something special for everyone.</p>' +
         '<div class="hero-actions">' +
           '<button class="btn btn-primary" id="shop-now-btn">Shop now</button>' +

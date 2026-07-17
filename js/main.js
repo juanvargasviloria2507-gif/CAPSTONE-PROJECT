@@ -17,7 +17,7 @@ function showToast(message) {
 function renderHeader() {
   var header = document.getElementById('site-header');
   header.innerHTML =
-    '<div class="logo" id="logo-home">' + ICONS.gift + ' The Ideal option</div>' +
+    '<div class="logo" id="logo-home">' + ICONS.gift + ' The Ideal Option</div>' +
     '<div class="search-bar">' +
       '<div>' + ICONS.search + '<input type="text" id="search-input" placeholder="Search gifts..."></div>' +
     '</div>' +

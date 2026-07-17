@@ -1,6 +1,6 @@
-# Ideal option
+# GiftHub
 
-The ideal Option is a small single-page e-commerce demo for a gift shop. It's built with plain HTML, CSS, and vanilla JavaScript — no frameworks, no build step, no bundler. Open `index.html` in a browser (or serve the folder statically) and it just works.
+GiftHub is a small single-page e-commerce demo for a gift shop. It's built with plain HTML, CSS, and vanilla JavaScript — no frameworks, no build step, no bundler. Open `index.html` in a browser (or serve the folder statically) and it just works.
 
 ## Features
 
