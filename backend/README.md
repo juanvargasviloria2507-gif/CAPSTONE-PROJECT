@@ -1,10 +1,8 @@
-# Backend - User Registration
-
-Author: Jose Vargas
+# Backend - Capstone Project
 
 ## Description
 
-Backend for the user registration module (BACKEND ticket) for the Capstone project. Implements the `POST /register` endpoint, which validates the received data, checks that the email is not already registered, encrypts the password, and saves the user in the database.
+This backend exposes the API for the Capstone project to handle user authentication, product catalog management, quiz-based recommendations, and favorites protected with JWT.
 
 ## Technologies
 
@@ -12,97 +10,192 @@ Backend for the user registration module (BACKEND ticket) for the Capstone proje
 - Express
 - MySQL (mysql2)
 - bcrypt
+- jsonwebtoken
 - dotenv
 
 ## Prerequisites
 
-- Node.js installed (v18 or higher recommended)
-- MySQL Server installed and running
-- A MySQL manager like MySQL Workbench (optional, but recommended)
+- Node.js 18 or higher
+- MySQL Server running
+- A MySQL client such as MySQL Workbench or the terminal
 
 ## Installation
 
-1. Clone the repository and go to the backend folder:
-```
-cd BACKEND
+1. Go to the backend folder:
+```bash
+cd backend
 ```
 
 2. Install dependencies:
-```
+```bash
 npm install
 ```
 
-3. Create the database and table. In MySQL Workbench (or MySQL shell), run:
+3. Create the database and the required tables in MySQL.
+
+Basic example:
 ```sql
 CREATE DATABASE CAPSTONE_PROJECT;
 USE CAPSTONE_PROJECT;
 
-CREATE TABLE users(
+CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(70),
     email VARCHAR(100) UNIQUE,
     password VARCHAR(60)
 );
+
+CREATE TABLE products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    description TEXT,
+    image VARCHAR(255),
+    price DECIMAL(10,2),
+    fit_tag VARCHAR(50),
+    color_tag VARCHAR(50),
+    style_tag VARCHAR(50)
+);
+
+CREATE TABLE product_sizes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT,
+    size VARCHAR(20)
+);
+
+CREATE TABLE recommendations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    fit_answer VARCHAR(50),
+    color_answer VARCHAR(50),
+    style_answer VARCHAR(50),
+    recommended_product_id INT
+);
+
+CREATE TABLE favorites (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_user_product (user_id, product_id)
+);
 ```
 
-4. Create the `.env` file in the `BACKEND` folder using `.env.example` as a reference, and fill in your local MySQL connection details:
-```
+4. Create the `.env` file inside the `backend` folder with the connection and JWT variables:
+```env
 DB_HOST=localhost
+DB_PORT=3306
 DB_USER=root
 DB_PASSWORD=your_password
 DB_NAME=CAPSTONE_PROJECT
 PORT=3000
+JWT_SECRET=your_secret_key
 ```
-
-This file is not committed to GitHub (it is included in `.gitignore`), so each person cloning the repository must create their own with their own connection information.
 
 ## Run the server
 
-```
-node index.js
+```bash
+node src/index.js
 ```
 
-If everything is configured correctly, the terminal should show:
-```
+If the configuration is correct, the server will display something similar to:
+```bash
 server running on port 3000
-MySQL connection successful
 ```
 
-## Endpoint
+## Available Endpoints
 
-### POST /register
+### Authentication
 
-Register a new user.
+#### POST /register
+Registers a new user.
 
-**Body (JSON):**
+Body:
 ```json
 {
+  "name": "Maria",
+  "email": "maria@example.com",
+  "password": "123456"
+}
+```
+
+Successful response (201):
+```json
+{
+  "message": "User registered successfully",
+  "userId": 1
+}
+```
+
+#### POST /login
+Logs in and returns a JWT token.
+
+Body:
+```json
+{
+  "email": "maria@example.com",
+  "password": "123456"
+}
+```
+
+Successful response (200):
+```json
+{
+  "message": "Login successful!",
+  "token": "jwt_token",
+  "user": {
+    "id": 1,
     "name": "Maria",
-    "email": "maria@example.com",
-    "password": "123456"
+    "email": "maria@example.com"
+  }
 }
 ```
 
-**Successful response (201):**
+### Products
+
+#### GET /products
+Returns all products.
+
+#### GET /products/:id
+Returns a product by its ID, including its sizes.
+
+### Recommendations
+
+#### POST /recommendations
+Receives quiz answers and returns product recommendations.
+
+Body:
 ```json
 {
-    "message": "User registered successfully",
-    "userId": 1
+  "fit": "skinny",
+  "color": "blue",
+  "style": "casual"
 }
 ```
 
-**Error responses (400):**
+### Favorites
+
+These routes are protected with JWT through the `verifyToken` middleware.
+
+#### POST /favorites
+Adds a product to the authenticated user's favorites.
+
+Body:
 ```json
-{ "error": "missing required fields" }
-```
-```json
-{ "error": "email already exists" }
+{
+  "productId": 1
+}
 ```
 
-## Presentation notes
+#### DELETE /favorites/:productId
+Removes a product from the authenticated user's favorites.
 
-Before the demo, verify on the presenting machine:
-- MySQL is running
-- The `.env` file exists with correct values (it is not committed to GitHub, so it must be created manually)
-- `npm install` has been run
-- The `users` database and table already exist
+#### GET /favorites
+Lists the authenticated user's favorite products.
+
+## Usage Notes
+
+Before testing the API, make sure that:
+- MySQL is running.
+- The `.env` file exists with the correct values.
+- The dependencies have been installed with `npm install`.
+- The required database and tables have been created.
