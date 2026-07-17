@@ -7,6 +7,7 @@
 // ==== IMPORTACIONES ====
 const express = require('express');       // Framework para crear el servidor y las rutas
 const bcrypt = require('bcrypt');          // Libreria para encriptar contrasenas
+const pool = require('../db');
 
 const app = express();
 
@@ -14,7 +15,7 @@ const app = express();
 // los bodies de las peticiones que vengan en formato JSON
 app.use(express.json());
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // ==== RUTA: REGISTRO DE USUARIO ====
 app.post('/register', async (req, res) => {
@@ -62,9 +63,10 @@ app.listen(PORT, () => {
 });
 
 // ==== CONEXION A LA BASE DE DATOS ====
-const pool = require('./db');
 
 // Prueba rapida de conexion (puedes quitar este bloque mas adelante)
 pool.query('SELECT 1')
     .then(() => console.log('Conexion a MySQL exitosa'))
-    .catch((err) => console.error('Error de conexion:', err.message));
+    .catch((err) => {
+    console.error("Error completo:", err);
+});
