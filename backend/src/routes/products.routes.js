@@ -1,8 +1,8 @@
 /**
- * Proyecto: Proyecto Integrador - Capstone Project (BACKEND)
- * Autor: Jose Vargas
- * Archivo: products.routes.js
- * Descripción: Enrutador para el listado de productos.
+ * Project: Capstone Project Backend
+ * Author: Jose Vargas
+ * File: products.routes.js
+ * Description: Router for product listing endpoints.
  */
 
 const express = require('express');

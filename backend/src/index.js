@@ -1,8 +1,8 @@
 /**
- * Proyecto: Proyecto Integrador - Capstone Project (BACKEND)
- * Autor: Jose Vargas
- * Archivo: index.js
- * Descripción: Punto de entrada del servidor. Conecta las rutas y arranca Express.
+ * Project: Capstone Project Backend
+ * Author: Jose Vargas
+ * File: index.js
+ * Description: Server entry point. Connects routes and starts Express.
  */
 
 const express = require('express');
@@ -12,12 +12,15 @@ app.use(express.json());
 
 app.use('/images', express.static('public/images'));
 
-// Conectar las rutas de autenticación (register y login)
+// Connect authentication routes (register and login)
 const authRoutes = require('./routes/auth.routes');
 app.use('/', authRoutes);
 
 const productsRoutes = require('./routes/products.routes');
 app.use('/', productsRoutes);
+
+const recommendationRoutes = require('./routes/recommendation.routes');
+app.use('/', recommendationRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

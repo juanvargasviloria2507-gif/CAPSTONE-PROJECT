@@ -1,15 +1,15 @@
 /**
- * Proyecto: Proyecto Integrador - Capstone Project (BACKEND)
- * Autor: Jose Vargas
- * Archivo: products.controller.js
- * Descripción: Controlador que maneja la lógica para obtener el listado de productos.
+ * Project: Capstone Project Backend
+ * Author: Jose Vargas
+ * File: products.controller.js
+ * Description: Controller that handles product listing logic.
  */
 
 const pool = require('../../db');
 
 const getAllProducts = async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT name, image, price FROM products');
+        const [rows] = await pool.query('SELECT id, image, price FROM products');
         res.status(200).send(rows);
     } catch (error) {
         console.error(error);
@@ -37,7 +37,7 @@ const getProductById = async (req, res) => {
             return res.status(404).send({ error: 'Product not found' });
         }
 
-        // Agrupamos las tallas en un arreglo, tomando los demás datos de la primera fila
+        // Group sizes into an array, using the other product data from the first row
         const product = {
             name: rows[0].name,
             description: rows[0].description,

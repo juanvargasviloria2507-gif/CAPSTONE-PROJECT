@@ -1,14 +1,14 @@
 /**
- * Proyecto: Proyecto Integrador - Capstone Project (BACKEND)
- * Autor: Jose Vargas
- * Archivo: db.js
- * Descripción: Configuración del pool de conexiones a la base de datos MySQL usando variables de entorno.
+ * Project: Capstone Project Backend
+ * Author: Jose Vargas
+ * File: db.js
+ * Description: MySQL connection pool configuration using environment variables.
  */
 
 require("dotenv").config();
 const mysql = require('mysql2/promise');
 
-// Creamos el pool de conexiones usando las variables del archivo .env
+// Create the connection pool using values from the .env file
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT || 3306,

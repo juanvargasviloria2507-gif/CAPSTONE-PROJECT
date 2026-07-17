@@ -1,12 +1,12 @@
-# Backend - Registro de Usuarios
+# Backend - User Registration
 
-Autor: Jose Vargas
+Author: Jose Vargas
 
-## Descripcion
+## Description
 
-Backend del modulo de registro de usuarios (ticket BACKEND) para el proyecto Capstone. Implementa el endpoint `POST /register`, que valida los datos recibidos, verifica que el correo no este registrado, encripta la contrasena y guarda el usuario en la base de datos.
+Backend for the user registration module (BACKEND ticket) for the Capstone project. Implements the `POST /register` endpoint, which validates the received data, checks that the email is not already registered, encrypts the password, and saves the user in the database.
 
-## Tecnologias
+## Technologies
 
 - Node.js
 - Express
@@ -14,25 +14,25 @@ Backend del modulo de registro de usuarios (ticket BACKEND) para el proyecto Cap
 - bcrypt
 - dotenv
 
-## Requisitos previos
+## Prerequisites
 
-- Node.js instalado (v18 o superior recomendado)
-- MySQL Server instalado y corriendo
-- Un gestor de MySQL como MySQL Workbench (opcional, pero recomendado)
+- Node.js installed (v18 or higher recommended)
+- MySQL Server installed and running
+- A MySQL manager like MySQL Workbench (optional, but recommended)
 
-## Instalacion
+## Installation
 
-1. Clonar el repositorio y entrar a la carpeta del backend:
+1. Clone the repository and go to the backend folder:
 ```
 cd BACKEND
 ```
 
-2. Instalar las dependencias:
+2. Install dependencies:
 ```
 npm install
 ```
 
-3. Crear la base de datos y la tabla. En MySQL Workbench (o consola de MySQL), ejecutar:
+3. Create the database and table. In MySQL Workbench (or MySQL shell), run:
 ```sql
 CREATE DATABASE CAPSTONE_PROJECT;
 USE CAPSTONE_PROJECT;
@@ -45,34 +45,34 @@ CREATE TABLE users(
 );
 ```
 
-4. Crear el archivo `.env` en la carpeta `BACKEND`, usando `.env.example` como referencia, y completar con los datos reales de tu MySQL local:
+4. Create the `.env` file in the `BACKEND` folder using `.env.example` as a reference, and fill in your local MySQL connection details:
 ```
 DB_HOST=localhost
 DB_USER=root
-DB_PASSWORD=tu_contrasena
+DB_PASSWORD=your_password
 DB_NAME=CAPSTONE_PROJECT
 PORT=3000
 ```
 
-Este archivo no se sube a GitHub (esta incluido en `.gitignore`), asi que cada persona que clone el repositorio debe crear el suyo con sus propios datos de conexion.
+This file is not committed to GitHub (it is included in `.gitignore`), so each person cloning the repository must create their own with their own connection information.
 
-## Correr el servidor
+## Run the server
 
 ```
 node index.js
 ```
 
-Si todo esta bien configurado, en la terminal debe aparecer:
+If everything is configured correctly, the terminal should show:
 ```
 server running on port 3000
-Conexion a MySQL exitosa
+MySQL connection successful
 ```
 
 ## Endpoint
 
 ### POST /register
 
-Registra un nuevo usuario.
+Register a new user.
 
 **Body (JSON):**
 ```json
@@ -83,7 +83,7 @@ Registra un nuevo usuario.
 }
 ```
 
-**Respuesta exitosa (201):**
+**Successful response (201):**
 ```json
 {
     "message": "User registered successfully",
@@ -91,7 +91,7 @@ Registra un nuevo usuario.
 }
 ```
 
-**Respuestas de error (400):**
+**Error responses (400):**
 ```json
 { "error": "missing required fields" }
 ```
@@ -99,10 +99,10 @@ Registra un nuevo usuario.
 { "error": "email already exists" }
 ```
 
-## Notas para la presentacion
+## Presentation notes
 
-Antes de la demo, verificar en la maquina donde se va a presentar:
-- Que MySQL este corriendo
-- Que exista el archivo `.env` con los datos correctos (no se sube a GitHub, hay que crearlo manualmente)
-- Que se haya corrido `npm install`
-- Que la base de datos y la tabla `users` ya existan
+Before the demo, verify on the presenting machine:
+- MySQL is running
+- The `.env` file exists with correct values (it is not committed to GitHub, so it must be created manually)
+- `npm install` has been run
+- The `users` database and table already exist

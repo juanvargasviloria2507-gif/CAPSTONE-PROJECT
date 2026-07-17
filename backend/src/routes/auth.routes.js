@@ -1,15 +1,15 @@
 /**
- * Proyecto: Proyecto Integrador - Capstone Project (BACKEND)
- * Autor: Jose Vargas
- * Archivo: auth.routes.js
- * Descripción: Enrutador que mapea las peticiones HTTP a sus respectivos controladores.
+ * Project: Capstone Project Backend
+ * Author: Jose Vargas
+ * File: auth.routes.js
+ * Description: Router mapping HTTP requests to authentication controllers.
  */
 
 const express = require('express');
 const router = express.Router();
-const authController = require('../controllers/auth.controller'); // Importa el controlador de autenticación
+const authController = require('../controllers/auth.controller'); // Imports the authentication controller
 
-// Definición de endpoints para registro y login
+// Define endpoints for registration and login
 router.post('/register', authController.register);
 router.post('/login', authController.login);
 
