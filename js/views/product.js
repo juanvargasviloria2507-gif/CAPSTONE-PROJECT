@@ -12,6 +12,8 @@ function renderProduct(container, params) {
     return;
   }
 
+  var isFav = FavoritesStore.isFavorite(product.id);
+
   container.innerHTML =
     '<div class="detail">' +
       '<a class="back-link" id="back-link">' + ICONS.back + ' Back to all gifts</a>' +
@@ -24,7 +26,10 @@ function renderProduct(container, params) {
           '<div class="product-rating"><span class="stars">' + renderStars(product.rating) + '</span><span>(' + product.rating + ')</span></div>' +
           '<p class="desc">' + product.desc + '</p>' +
           '<span class="product-price">$' + product.price.toFixed(2) + '</span>' +
-          '<button class="add-to-cart" id="detail-add-to-cart">' + ICONS.cart + ' Add to cart</button>' +
+          '<div class="detail-actions">' +
+            '<button class="add-to-cart" id="detail-add-to-cart">' + ICONS.cart + ' Add to cart</button>' +
+            '<button type="button" class="fav-btn detail-fav-btn ' + (isFav ? 'active' : '') + '" id="detail-fav-btn" aria-label="Toggle favorite">' + ICONS.heart + '</button>' +
+          '</div>' +
         '</div>' +
       '</div>' +
       '<div class="reviews-section" id="reviews-section"></div>' +
@@ -37,6 +42,10 @@ function renderProduct(container, params) {
   container.querySelector('#detail-add-to-cart').addEventListener('click', function () {
     CartStore.addItem(product);
     showToast(product.name + ' added to cart');
+  });
+
+  container.querySelector('#detail-fav-btn').addEventListener('click', function () {
+    handleFavoriteToggle(product.id, this);
   });
 
   renderReviewsSection(container.querySelector('#reviews-section'), product);
@@ -122,11 +131,3 @@ function renderReviewsSection(section, product) {
   });
 }
 
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}

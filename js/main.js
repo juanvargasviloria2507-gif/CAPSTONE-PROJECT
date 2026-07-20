@@ -21,7 +21,11 @@ function renderHeader() {
     '<div class="search-bar">' +
       '<div>' + ICONS.search + '<input type="text" id="search-input" placeholder="Search gifts..."></div>' +
     '</div>' +
-    '<div class="cart-btn" id="cart-btn">' + ICONS.cart + '<span class="cart-badge" id="cart-badge" style="display:none">0</span></div>';
+    '<div class="header-actions">' +
+      '<div class="account-area" id="account-area"></div>' +
+      '<div class="fav-nav-btn" id="fav-nav-btn">' + ICONS.heart + '<span class="cart-badge" id="fav-badge" style="display:none">0</span></div>' +
+      '<div class="cart-btn" id="cart-btn">' + ICONS.cart + '<span class="cart-badge" id="cart-badge" style="display:none">0</span></div>' +
+    '</div>';
 
   header.querySelector('#logo-home').addEventListener('click', function () {
     Router.navigate('/');
@@ -43,6 +47,48 @@ function renderHeader() {
   header.querySelector('#cart-btn').addEventListener('click', function () {
     Router.navigate('/cart');
   });
+
+  var favBadge = header.querySelector('#fav-badge');
+  function updateFavBadge() {
+    var count = FavoritesStore.getCount();
+    favBadge.textContent = count;
+    favBadge.style.display = count > 0 ? 'flex' : 'none';
+  }
+  FavoritesStore.subscribe(updateFavBadge);
+  updateFavBadge();
+
+  header.querySelector('#fav-nav-btn').addEventListener('click', function () {
+    Router.navigate('/favorites');
+  });
+
+  renderAccountArea(header);
+  AuthStore.subscribe(function () {
+    renderAccountArea(header);
+    updateFavBadge();
+  });
+}
+
+function renderAccountArea(header) {
+  var area = header.querySelector('#account-area');
+  var user = AuthStore.getCurrentUser();
+
+  if (user) {
+    area.innerHTML =
+      '<div class="account-chip">' +
+        '<span class="account-chip-name">' + ICONS.user + escapeHtml(user.name) + '</span>' +
+        '<button type="button" id="logout-btn" class="account-logout">Log out</button>' +
+      '</div>';
+    area.querySelector('#logout-btn').addEventListener('click', function () {
+      AuthStore.logout();
+      showToast('Logged out');
+      Router.navigate('/');
+    });
+  } else {
+    area.innerHTML = '<button type="button" class="btn btn-secondary account-login-btn" id="login-nav-btn">Log in</button>';
+    area.querySelector('#login-nav-btn').addEventListener('click', function () {
+      Router.navigate('/login');
+    });
+  }
 }
 
 function renderNav(activeSlug) {
@@ -69,6 +115,8 @@ document.addEventListener('DOMContentLoaded', function () {
   Router.register('/category/:category', renderHome);
   Router.register('/product/:id', renderProduct);
   Router.register('/cart', renderCart);
+  Router.register('/favorites', renderFavorites);
+  Router.register('/login', renderLogin);
 
   Router.init(document.getElementById('app'));
 });

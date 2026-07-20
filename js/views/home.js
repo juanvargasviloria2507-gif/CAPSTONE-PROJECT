@@ -49,6 +49,32 @@ function renderHome(container, params) {
     container.querySelector('#products-section').scrollIntoView({ behavior: 'smooth' });
   });
 
+  wireProductGrid(grid);
+}
+
+function renderProductCard(p) {
+  var isFav = FavoritesStore.isFavorite(p.id);
+  return (
+    '<div class="product-card">' +
+      '<div class="product-thumb ' + (p.photo ? 'photo' : '') + '" data-goto-product="' + p.id + '">' +
+        (p.photo ? '' : ICONS.placeholder) +
+      '</div>' +
+      '<button type="button" class="fav-btn ' + (isFav ? 'active' : '') + '" data-fav-toggle="' + p.id + '" aria-label="Toggle favorite">' + ICONS.heart + '</button>' +
+      '<div class="product-name" data-goto-product="' + p.id + '">' + p.name + '</div>' +
+      '<div class="product-desc">' + p.desc + '</div>' +
+      '<div class="product-rating"><span class="stars">' + renderStars(p.rating) + '</span><span>(' + p.rating + ')</span></div>' +
+      '<div class="product-meta">' +
+        '<span class="product-price">$' + p.price.toFixed(2) + '</span>' +
+        '<span class="product-tag">' + TAG_LABELS[p.tag] + '</span>' +
+      '</div>' +
+      '<button class="add-to-cart" data-add-to-cart="' + p.id + '">' + ICONS.cart + ' Add to cart</button>' +
+    '</div>'
+  );
+}
+
+/* Shared wiring for any grid of product cards produced by
+   renderProductCard — used by the home grid and the favorites view. */
+function wireProductGrid(grid) {
   grid.querySelectorAll('[data-goto-product]').forEach(function (el) {
     el.addEventListener('click', function () {
       Router.navigate('/product/' + el.getAttribute('data-goto-product'));
@@ -65,22 +91,27 @@ function renderHome(container, params) {
       }
     });
   });
+
+  grid.querySelectorAll('[data-fav-toggle]').forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      e.stopPropagation();
+      handleFavoriteToggle(el.getAttribute('data-fav-toggle'), el);
+    });
+  });
 }
 
-function renderProductCard(p) {
-  return (
-    '<div class="product-card">' +
-      '<div class="product-thumb ' + (p.photo ? 'photo' : '') + '" data-goto-product="' + p.id + '">' +
-        (p.photo ? '' : ICONS.placeholder) +
-      '</div>' +
-      '<div class="product-name" data-goto-product="' + p.id + '">' + p.name + '</div>' +
-      '<div class="product-desc">' + p.desc + '</div>' +
-      '<div class="product-rating"><span class="stars">' + renderStars(p.rating) + '</span><span>(' + p.rating + ')</span></div>' +
-      '<div class="product-meta">' +
-        '<span class="product-price">$' + p.price.toFixed(2) + '</span>' +
-        '<span class="product-tag">' + TAG_LABELS[p.tag] + '</span>' +
-      '</div>' +
-      '<button class="add-to-cart" data-add-to-cart="' + p.id + '">' + ICONS.cart + ' Add to cart</button>' +
-    '</div>'
-  );
+/* Toggles a product's favorite state. Requires a logged-in user —
+   guests are sent to the login page instead. btnEl (optional) gets
+   its "active" class flipped immediately so the heart updates without
+   a full re-render. */
+function handleFavoriteToggle(productId, btnEl) {
+  if (!AuthStore.isLoggedIn()) {
+    showToast('Log in to save favorites');
+    Router.navigate('/login');
+    return;
+  }
+  FavoritesStore.toggle(productId);
+  var nowFav = FavoritesStore.isFavorite(productId);
+  if (btnEl) btnEl.classList.toggle('active', nowFav);
+  showToast(nowFav ? 'Added to favorites' : 'Removed from favorites');
 }
