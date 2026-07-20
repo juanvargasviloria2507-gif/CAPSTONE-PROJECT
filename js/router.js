@@ -1,8 +1,8 @@
 /* router.js
-   Router SPA minimalista basado en el hash de la URL.
-   Cada ruta es un patrón tipo "/product/:id" mapeado a una función
-   de render. Al cambiar el hash, se resuelve la ruta y se invoca
-   la vista correspondiente sin recargar la página.
+   Minimal SPA router based on the URL hash.
+   Each route is a pattern like "/product/:id" mapped to a render
+   function. When the hash changes, the route is resolved and the
+   matching view is invoked without reloading the page.
 */
 
 var Router = (function () {
@@ -39,7 +39,7 @@ var Router = (function () {
         return;
       }
     }
-    rootEl.innerHTML = '<div class="empty-state">Página no encontrada.</div>';
+    rootEl.innerHTML = '<div class="empty-state">Page not found.</div>';
   }
 
   function navigate(path) {

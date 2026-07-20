@@ -1,259 +1,121 @@
-/* ======================================================
-   HOME VIEW
-   Shopping page for The Ideal Option
-====================================================== */
-
+/* views/home.js
+   Main view: hero + product grid, filterable by category via the
+   ":category" route parameter (used by the nav).
+*/
 
 function renderHome(container, params) {
-
-  var categorySlug = (params && params.category) || "";
-
+  var categorySlug = (params && params.category) || '';
   var filtered = categorySlug
-      ? PRODUCTS.filter(function (product) {
-          return product.tag === categorySlug;
-      })
-      : PRODUCTS;
+    ? PRODUCTS.filter(function (p) { return p.tag === categorySlug; })
+    : PRODUCTS;
 
-  var category = CATEGORIES.find(function (c) {
-      return c.slug === categorySlug;
-  });
-
-  var heading = category ? category.label : "Our Jeans Collection";
+  var categoryLabel = CATEGORIES.find(function (c) { return c.slug === categorySlug; });
+  var heading = categoryLabel ? categoryLabel.label : 'All Jeans';
 
   container.innerHTML =
+    '<section class="hero">' +
+      '<div class="hero-copy">' +
+        '<span class="hero-kicker">Handpicked, since forever</span>' +
+        '<h1>Find the perfect pants for every occasion</h1>' +
+        '<p>Discover unique, thoughtfully chosen gifts that will make your loved ones smile. From personalized treasures to timeless classics, we have something special for everyone.</p>' +
+        '<div class="hero-actions">' +
+          '<button class="btn btn-primary" id="shop-now-btn">Shop now</button>' +
+          '<button class="btn btn-secondary" id="find-fit-btn">Find My Fit</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="hero-visual">' +
+        '<div class="art">' +
+          '<img src="assets/hero.jpeg" alt="The Flare" class="hero-img" onerror="this.style.display=\'none\'">' +
+       
+        '</div>' +
+      '</div>' +
+    '</section>' +
+    '<section class="products" id="products-section">' +
+      '<div class="products-header">' +
+        '<h2>' + heading + '</h2>' +
+        '<span>' + filtered.length + ' product' + (filtered.length === 1 ? '' : 's') + '</span>' +
+      '</div>' +
+      '<div class="product-grid" id="product-grid"></div>' +
+    '</section>';
 
-      '<section class="hero">' +
-
-          '<div class="hero-copy">' +
-
-              '<span class="hero-label">NEW COLLECTION</span>' +
-
-              '<h1>Find Your Perfect Fit</h1>' +
-
-              '<p>Premium denim designed for every body, every style and every occasion.</p>' +
-
-              '<button class="btn btn-primary" id="shop-now-btn">Shop Collection</button>' +
-
-          '</div>' +
-
-          '<div class="hero-visual">' +
-
-              '<img src="assets/hero.jpeg" class="hero-img" alt="Hero Image">' +
-
-          '</div>' +
-
-      '</section>' +
-
-      '<section class="products" id="products-section">' +
-
-          '<div class="products-header">' +
-
-              '<div>' +
-
-                  '<h2>' + heading + '</h2>' +
-
-                  '<p>' + filtered.length + ' Products Available</p>' +
-
-              '</div>' +
-
-          '</div>' +
-
-          '<div class="product-grid" id="product-grid"></div>' +
-
-      '</section>';
-
-      grid.querySelectorAll("[data-favorite]").forEach(function(btn){
-
-        btn.addEventListener("click", function(e){
-    
-            e.stopPropagation();
-    
-            var product = findProductById(
-    
-                btn.getAttribute("data-favorite")
-    
-            );
-    
-            FavoritesStore.toggle(product);
-    
-            renderHome(container, params);
-    
-        });
-    
-    });
-
-  var grid = container.querySelector("#product-grid");
-
-
-
+  var grid = container.querySelector('#product-grid');
   if (filtered.length === 0) {
-
-      grid.innerHTML =
-
-          '<div class="empty-state">' +
-
-          '<h2>No jeans found</h2>' +
-
-          '<p>Please try another category.</p>' +
-
-          '</div>';
-
+    grid.innerHTML = '<div class="empty-state">No products in this category yet.</div>';
+  } else {
+    grid.innerHTML = filtered.map(renderProductCard).join('');
   }
 
-  else {
+  container.querySelector('#shop-now-btn').addEventListener('click', function () {
+    container.querySelector('#products-section').scrollIntoView({ behavior: 'smooth' });
+  });
 
-      grid.innerHTML = filtered.map(renderProductCard).join("");
+  container.querySelector('#find-fit-btn').addEventListener('click', function () {
+    Router.navigate('/quiz');
+  });
 
-  }
-  grid.querySelectorAll("[data-favorite]").forEach(function (btn) {
-
-    btn.addEventListener("click", function (e) {
-
-        e.stopPropagation();
-
-        var product = findProductById(
-
-            btn.getAttribute("data-favorite")
-
-        );
-
-        FavoritesStore.toggle(product);
-
-        renderHome(container, params);
-
-    });
-
-});
-
-
-  document.getElementById("shop-now-btn")
-
-      .addEventListener("click", function () {
-
-          document
-
-              .getElementById("products-section")
-
-              .scrollIntoView({
-
-                  behavior: "smooth"
-
-              });
-
-      });
-
-
-
-  grid.querySelectorAll("[data-goto-product]")
-
-      .forEach(function (card) {
-
-          card.addEventListener("click", function () {
-
-              Router.navigate("/product/" + card.dataset.gotoProduct);
-
-          });
-
-      });
-
-
-
-  grid.querySelectorAll("[data-add-to-cart]")
-
-      .forEach(function (button) {
-
-          button.addEventListener("click", function (e) {
-
-              e.stopPropagation();
-
-              var product = findProductById(button.dataset.addToCart);
-
-              if (product) {
-
-                  CartStore.addItem(product);
-
-                  showToast(product.name + " added to cart");
-
-              }
-
-          });
-
-      });
-
+  wireProductGrid(grid);
 }
 
+function renderProductCard(p) {
+  var isFav = FavoritesStore.isFavorite(p.id);
+  return (
+    '<div class="product-card">' +
+      '<div class="product-thumb ' + (p.photo ? 'photo' : '') + '" data-goto-product="' + p.id + '">' +
+        (p.photo ? '' : ICONS.placeholder) +
+      '</div>' +
+      '<button type="button" class="fav-btn ' + (isFav ? 'active' : '') + '" data-fav-toggle="' + p.id + '" aria-label="Toggle favorite">' + ICONS.heart + '</button>' +
+      '<div class="product-name" data-goto-product="' + p.id + '">' + p.name + '</div>' +
+      '<div class="product-desc">' + p.desc + '</div>' +
+      '<div class="product-rating"><span class="stars">' + renderStars(p.rating) + '</span><span>(' + p.rating + ')</span></div>' +
+      '<div class="product-meta">' +
+        '<span class="product-price">$' + p.price.toFixed(2) + '</span>' +
+        '<span class="product-tag">' + TAG_LABELS[p.tag] + '</span>' +
+      '</div>' +
+      '<button class="add-to-cart" data-add-to-cart="' + p.id + '">' + ICONS.cart + ' Add to cart</button>' +
+    '</div>'
+  );
+}
 
+/* Shared wiring for any grid of product cards produced by
+   renderProductCard — used by the home grid and the favorites view. */
+function wireProductGrid(grid) {
+  grid.querySelectorAll('[data-goto-product]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      Router.navigate('/product/' + el.getAttribute('data-goto-product'));
+    });
+  });
 
-/* ======================================================
- PRODUCT CARD
-====================================================== */
+  grid.querySelectorAll('[data-add-to-cart]').forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var product = findProductById(el.getAttribute('data-add-to-cart'));
+      if (product) {
+        CartStore.addItem(product);
+        showToast(product.name + ' added to cart');
+      }
+    });
+  });
 
-function renderProductCard(product) {
-    function renderProductCard(p) {
+  grid.querySelectorAll('[data-fav-toggle]').forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      e.stopPropagation();
+      handleFavoriteToggle(el.getAttribute('data-fav-toggle'), el);
+    });
+  });
+}
 
-        var favorite = FavoritesStore.isFavorite(p.id);
-    
-        return (
-    
-            '<div class="product-card">' +
-    
-                '<button class="favorite-btn ' + (favorite ? 'active' : '') + '" data-favorite="' + p.id + '">' +
-    
-                (favorite ? ICONS.heartFilled : ICONS.heart) +
-    
-                '</button>' +
-    
-                '<div class="product-thumb photo" data-goto-product="' + p.id + '">' +
-    
-                    '<img src="' + p.image + '" alt="' + p.name + '">' +
-    
-                '</div>' +
-    
-                '<div class="product-name" data-goto-product="' + p.id + '">' +
-    
-                    p.name +
-    
-                '</div>' +
-    
-                '<div class="product-desc">' +
-    
-                    p.desc +
-    
-                '</div>' +
-    
-                '<div class="product-rating">' +
-    
-                    '<span class="stars">' +
-    
-                        renderStars(p.rating) +
-    
-                    '</span>' +
-    
-                    '<span>(' + p.rating + ')</span>' +
-    
-                '</div>' +
-    
-                '<div class="product-meta">' +
-    
-                    '<span class="product-price">$' +
-    
-                        p.price.toFixed(2) +
-    
-                    '</span>' +
-    
-                '</div>' +
-    
-                '<button class="add-to-cart" data-add-to-cart="' + p.id + '">' +
-    
-                    ICONS.cart +
-    
-                    ' Add to Cart' +
-    
-                '</button>' +
-    
-            '</div>'
-    
-        );
-    
-    }
+/* Toggles a product's favorite state. Requires a logged-in user —
+   guests are sent to the login page instead. btnEl (optional) gets
+   its "active" class flipped immediately so the heart updates without
+   a full re-render. */
+function handleFavoriteToggle(productId, btnEl) {
+  if (!AuthStore.isLoggedIn()) {
+    showToast('Log in to save favorites');
+    Router.navigate('/login');
+    return;
+  }
+  FavoritesStore.toggle(productId);
+  var nowFav = FavoritesStore.isFavorite(productId);
+  if (btnEl) btnEl.classList.toggle('active', nowFav);
+  showToast(nowFav ? 'Added to favorites' : 'Removed from favorites');
 }

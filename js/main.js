@@ -1,542 +1,123 @@
-/* ======================================================
-   main.js
-   The Ideal Option
-   Main SPA configuration
-====================================================== */
+/* main.js
+   Entry point of the SPA. Builds the header and nav (persistent
+   chrome that doesn't change between routes), wires up the cart and
+   the search bar, registers the routes, and starts the router.
+*/
 
 function showToast(message) {
-  var toast = document.getElementById("toast");
-
+  var toast = document.getElementById('toast');
   toast.textContent = message;
-
-  toast.classList.add("show");
-
+  toast.classList.add('show');
   clearTimeout(showToast._t);
-
   showToast._t = setTimeout(function () {
-    toast.classList.remove("show");
+    toast.classList.remove('show');
   }, 1800);
 }
 
-/*======================================================
-HEADER
-======================================================*/
-
 function renderHeader() {
-
-  var header = document.getElementById("site-header");
-
+  var header = document.getElementById('site-header');
   header.innerHTML =
-
-    '<div class="logo" id="logo-home">' +
-
-      ICONS.gift +
-
-      ' The Ideal Option' +
-
-    '</div>' +
-
+    '<div class="logo" id="logo-home">' + ICONS.gift + ' The Ideal Option</div>' +
     '<div class="search-bar">' +
-
-      '<div>' +
-
-        ICONS.search +
-
-        '<input type="text" id="search-input" placeholder="Search your favorite jeans...">' +
-
-      '</div>' +
-
+      '<div>' + ICONS.search + '<input type="text" id="search-input" placeholder="Search Jeans..."></div>' +
     '</div>' +
+    '<div class="header-actions">' +
+      '<div class="account-area" id="account-area"></div>' +
+      '<div class="fav-nav-btn" id="fav-nav-btn">' + ICONS.heart + '<span class="cart-badge" id="fav-badge" style="display:none">0</span></div>' +
+      '<div class="cart-btn" id="cart-btn">' + ICONS.cart + '<span class="cart-badge" id="cart-badge" style="display:none">0</span></div>' +
+    '</div>';
 
-    '<div class="auth-area" id="auth-area"></div>' +
-
-'<div class="favorites-btn" id="favorites-btn">' +ICONS.heart +
-    '<span class="favorites-badge" id="favorites-badge" style="display:none">0</span>' +
-'</div>' +
-
-'<div class="cart-btn" id="cart-btn">' +
-    ICONS.cart +
-    '<span class="cart-badge" id="cart-badge" style="display:none">0</span>' +
-'</div>';
-
-
-
-  header.querySelector("#logo-home").addEventListener("click", function () {
-
-    Router.navigate("/");
-
+  header.querySelector('#logo-home').addEventListener('click', function () {
+    Router.navigate('/');
   });
 
-  header.querySelector("#favorites-btn").addEventListener("click", function(){
-
-    Router.navigate("/favorites");
-
-});
-
-  header.querySelector("#search-input").addEventListener("keydown", function (e) {
-
-    if (e.key === "Enter") {
-
-      Router.navigate("/");
-
+  header.querySelector('#search-input').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.target.value.trim()) {
+      Router.navigate('/');
     }
-
   });
 
-
-
-/* CART */
-
-var cartBadge = header.querySelector("#cart-badge");
-
-function updateCartBadge(){
-
-    var count = CartStore.getCount();
-
-    cartBadge.textContent = count;
-
-    cartBadge.style.display = count > 0 ? "flex" : "none";
-
-}
-
-CartStore.subscribe(updateCartBadge);
-
-updateCartBadge();
-
-
-/* FAVORITES */
-
-var favoritesBadge = header.querySelector("#favorites-badge");
-
-function updateFavoritesBadge(){
-
-    var count = FavoritesStore.count();
-
-    favoritesBadge.textContent = count;
-
-    favoritesBadge.style.display = count > 0 ? "flex" : "none";
-
-}
-
-FavoritesStore.subscribe(updateFavoritesBadge);
-
-updateFavoritesBadge();;
-
-
-
+  var badge = header.querySelector('#cart-badge');
   CartStore.subscribe(function () {
-
     var count = CartStore.getCount();
-
     badge.textContent = count;
-
-    badge.style.display = count ? "flex" : "none";
-
+    badge.style.display = count > 0 ? 'flex' : 'none';
   });
 
+  header.querySelector('#cart-btn').addEventListener('click', function () {
+    Router.navigate('/cart');
+  });
 
+  var favBadge = header.querySelector('#fav-badge');
+  function updateFavBadge() {
+    var count = FavoritesStore.getCount();
+    favBadge.textContent = count;
+    favBadge.style.display = count > 0 ? 'flex' : 'none';
+  }
+  FavoritesStore.subscribe(updateFavBadge);
+  updateFavBadge();
 
-  renderAuthArea(header);
+  header.querySelector('#fav-nav-btn').addEventListener('click', function () {
+    Router.navigate('/favorites');
+  });
 
+  renderAccountArea(header);
   AuthStore.subscribe(function () {
-
-    renderAuthArea(header);
-
+    renderAccountArea(header);
+    updateFavBadge();
   });
-
 }
 
-/*======================================================
-LOGIN STATUS
-======================================================*/
+function renderAccountArea(header) {
+  var area = header.querySelector('#account-area');
+  var user = AuthStore.getCurrentUser();
 
-function renderAuthArea(header) {
-
-  var authArea = header.querySelector("#auth-area");
-
-  var user = AuthStore.getUser();
-
-
-
-  if (AuthStore.isAuthenticated() && user) {
-
-    authArea.innerHTML =
-
-      '<span class="auth-area-greeting">' +
-
-      "Hi, " +
-
-      user.name.split(" ")[0] +
-
-      "</span>" +
-
-      '<a class="signup-link" id="logout-link">Logout</a>';
-
-
-
-    authArea
-
-      .querySelector("#logout-link")
-
-      .addEventListener("click", function () {
-
-        AuthStore.clearSession();
-
-        showToast("Logged out successfully");
-
-        Router.navigate("/");
-
-      });
-
+  if (user) {
+    area.innerHTML =
+      '<div class="account-chip">' +
+        '<span class="account-chip-name">' + ICONS.user + escapeHtml(user.name) + '</span>' +
+        '<button type="button" id="logout-btn" class="account-logout">Log out</button>' +
+      '</div>';
+    area.querySelector('#logout-btn').addEventListener('click', function () {
+      AuthStore.logout();
+      showToast('Logged out');
+      Router.navigate('/');
+    });
+  } else {
+    area.innerHTML = '<button type="button" class="btn btn-secondary account-login-btn" id="login-nav-btn">Log in</button>';
+    area.querySelector('#login-nav-btn').addEventListener('click', function () {
+      Router.navigate('/login');
+    });
   }
-
-  else {
-
-    authArea.innerHTML =
-
-      '<a class="signup-link" id="signup-link">Sign Up</a>';
-
-
-
-    authArea
-
-      .querySelector("#signup-link")
-
-      .addEventListener("click", function () {
-
-        Router.navigate("/register");
-
-      });
-
-  }
-
 }
-
-/*======================================================
-FOOTER
-======================================================*/
-
-function renderFooter() {
-  var footer = document.getElementById("site-footer");
-  var categoryLinks =
-
-    CATEGORIES
-
-      .filter(function (c) {
-
-        return c.slug;
-
-      })
-
-      .map(function (c) {
-
-        return (
-
-          '<li><a data-goto-category="' +
-
-          c.slug +
-
-          '">' +
-
-          c.label +
-
-          "</a></li>"
-
-        );
-
-      })
-
-      .join("");
-
-
-
-  var helpLinks =
-
-    [
-
-      "FAQs",
-
-      "Shipping",
-
-      "Returns",
-
-      "Contact Us"
-
-    ]
-
-      .map(function (label) {
-
-        return "<li><a data-help-link>" + label + "</a></li>";
-
-      })
-
-      .join("");
-
-
-
-  footer.innerHTML =
-
-    '<div class="footer-top">' +
-
-      '<div class="footer-col footer-brand">' +
-
-        '<div class="logo" id="footer-logo">' +
-
-          ICONS.gift +
-
-          " The Ideal Option" +
-
-        "</div>" +
-
-        "<p>" +
-
-          "Premium denim designed for comfort, confidence and timeless style." +
-
-        "</p>" +
-
-        '<div class="footer-social">' +
-
-          '<a class="footer-social-icon" data-help-link>' +
-
-            ICONS.instagram +
-
-          "</a>" +
-
-          '<a class="footer-social-icon" data-help-link>' +
-
-            ICONS.facebook +
-
-          "</a>" +
-
-          '<a class="footer-social-icon" data-help-link>' +
-
-            ICONS.x +
-
-          "</a>" +
-
-        "</div>" +
-
-      "</div>" +
-
-      '<div class="footer-col">' +
-
-        "<h4>Shop</h4>" +
-
-        "<ul>" +
-
-          categoryLinks +
-
-        "</ul>" +
-
-      "</div>" +
-
-      '<div class="footer-col">' +
-
-        "<h4>Support</h4>" +
-
-        "<ul>" +
-
-          helpLinks +
-
-        "</ul>" +
-
-      "</div>" +
-
-      '<div class="footer-col footer-newsletter">' +
-
-        "<h4>Stay Updated</h4>" +
-
-        "<p>" +
-
-          "Receive exclusive discounts, new arrivals and fashion news." +
-
-        "</p>" +
-
-        '<form id="newsletter-form">' +
-
-          '<div class="footer-newsletter-input">' +
-
-            ICONS.mail +
-
-            '<input type="email" id="newsletter-email" placeholder="Enter your email" required>' +
-
-          "</div>" +
-
-          '<button class="btn btn-primary">Subscribe</button>' +
-
-        "</form>" +
-
-      "</div>" +
-
-    "</div>" +
-
-    '<div class="footer-bottom">' +
-
-      "<span>" +
-
-        "© " +
-
-        new Date().getFullYear() +
-
-        " The Ideal Option. All rights reserved." +
-
-      "</span>" +
-
-      '<div class="footer-legal-links">' +
-
-        "<a data-help-link>Terms</a>" +
-
-        "<a data-help-link>Privacy</a>" +
-
-      "</div>" +
-
-    "</div>";
-
-
-
-  footer.querySelector("#footer-logo").addEventListener("click", function () {
-
-    Router.navigate("/");
-
-  });
-
-
-
-  footer.querySelectorAll("[data-goto-category]").forEach(function (el) {
-
-    el.addEventListener("click", function () {
-
-      Router.navigate("/category/" + el.getAttribute("data-goto-category"));
-
-    });
-
-  });
-
-
-
-  footer.querySelectorAll("[data-help-link]").forEach(function (el) {
-
-    el.addEventListener("click", function () {
-
-      showToast("Coming Soon");
-
-    });
-
-  });
-
-
-
-  footer
-
-    .querySelector("#newsletter-form")
-
-    .addEventListener("submit", function (e) {
-
-      e.preventDefault();
-
-
-
-      var input = document.getElementById("newsletter-email");
-
-
-
-      if (input.value.trim()) {
-
-        showToast("Thanks for subscribing!");
-
-        input.value = "";
-
-      }
-
-    });
-
-}
-
-/*======================================================
-NAVIGATION
-======================================================*/
 
 function renderNav(activeSlug) {
-
   var nav = document.getElementById('site-nav');
-
-  var categories = CATEGORIES.map(function (c) {
-
+  nav.innerHTML = CATEGORIES.map(function (c) {
     var isActive = (activeSlug || '') === c.slug;
-
-    var href = c.slug
-      ? '#/category/' + c.slug
-      : '#/';
-
-    return (
-      '<a class="' +
-      (isActive ? 'active' : '') +
-      '" href="' +
-      href +
-      '">' +
-      c.label +
-      '</a>'
-    );
-
+    var href = c.slug ? '#/category/' + c.slug : '#/';
+    return '<a class="' + (isActive ? 'active' : '') + '" href="' + href + '">' + c.label + '</a>';
   }).join('');
-
-  nav.innerHTML =
-
-      categories +
-
-      '<a href="#/questionnaire" class="find-fit-btn">' +
-
-        '✨ Find My Fit' +
-
-      '</a>';
-
 }
 
 function updateActiveNavFromHash() {
-
-  var path =
-
-    (window.location.hash || "#/").replace(/^#/, "");
-
-
-
+  var path = (window.location.hash || '#/').replace(/^#/, '');
   var match = path.match(/^\/category\/([^/]+)$/);
-
-
-
-  renderNav(match ? match[1] : "");
-
+  renderNav(match ? match[1] : '');
 }
 
-/*======================================================
-APP START
-======================================================*/
-
-document.addEventListener("DOMContentLoaded", function () {
-
+document.addEventListener('DOMContentLoaded', function () {
   renderHeader();
-
-  renderFooter();
-
   updateActiveNavFromHash();
-
-
-
-  window.addEventListener("hashchange", updateActiveNavFromHash);
-
-
+  window.addEventListener('hashchange', updateActiveNavFromHash);
 
   Router.register('/', renderHome);
   Router.register('/category/:category', renderHome);
   Router.register('/product/:id', renderProduct);
-  
+  Router.register('/cart', renderCart);
   Router.register('/favorites', renderFavorites);
-  Router.register('/questionnaire', renderQuestionnaire);
-  
-  Router.register('/register', renderRegister);
   Router.register('/login', renderLogin);
-  Router.register('/forgot-password', renderForgotPassword);
-  
-  Router.init(document.getElementById("app"));
+  Router.register('/quiz', renderQuiz);
 
+  Router.init(document.getElementById('app'));
 });

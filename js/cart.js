@@ -1,20 +1,42 @@
 /* cart.js
-   Estado global simple del carrito de compras, con patrón pub/sub
-   para que cualquier parte de la UI (por ejemplo el badge del header)
-   se actualice cuando cambia el contenido del carrito.
+   Simple global shopping cart state, using a pub/sub pattern so any
+   part of the UI (e.g. the header badge) can update whenever the
+   cart contents change.
 */
 
 var CartStore = (function () {
   var items = [];
   var listeners = [];
 
+  function notify() {
+    listeners.forEach(function (fn) { fn(items); });
+  }
+
   function addItem(product) {
     items.push(product);
-    listeners.forEach(function (fn) { fn(items); });
+    notify();
+  }
+
+  function removeItem(index) {
+    items.splice(index, 1);
+    notify();
+  }
+
+  function clear() {
+    items = [];
+    notify();
+  }
+
+  function getItems() {
+    return items.slice();
   }
 
   function getCount() {
     return items.length;
+  }
+
+  function getTotal() {
+    return items.reduce(function (sum, p) { return sum + p.price; }, 0);
   }
 
   function subscribe(fn) {
@@ -23,7 +45,11 @@ var CartStore = (function () {
 
   return {
     addItem: addItem,
+    removeItem: removeItem,
+    clear: clear,
+    getItems: getItems,
     getCount: getCount,
+    getTotal: getTotal,
     subscribe: subscribe
   };
 })();

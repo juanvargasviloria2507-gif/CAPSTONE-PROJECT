@@ -1,56 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>The Ideal Option</title>
-
+<title>The ideal Option — Find the perfect gift</title>
 <link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/favorites.css">
-<link rel="stylesheet" href="css/questionnaire.css">
-
 </head>
-
 <body>
 
-<header id="site-header"></header>
+  <header id="site-header">
+    
+  </header>
+  <nav id="site-nav"></nav>
 
-<nav id="site-nav"></nav>
+  <main id="app"></main>
 
-<main id="app"></main>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-col">
+        <div class="footer-logo">The Ideal Option</div>
+        <p>Small catalog, big thought put into every pick. Started as a side project, still run that way.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <a href="#/">All Jeans</a>
+        <a href="#/category/mom-fit">Mom Fit</a>
+        <a href="#/category/wide-leg">Wide Leg</a>
+      </div>
+      <div class="footer-col">
+        <h4>Say hello</h4>
+        <p>hello@TheIdealOption.com<br>Mon–Fri, replies within a day or two.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 The Ideal Option. Built by hand, one late night at a time.</div>
+  </footer>
 
-<footer id="site-footer"></footer>
+  <div class="toast" id="toast"></div>
 
-<div class="help-fab">?</div>
+  <!-- Shared data and utilities -->
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/favorites.js"></script>
+  <script src="js/reviews.js"></script>
+  <script src="js/router.js"></script>
 
-<div class="toast" id="toast"></div>
+  <!-- Views -->
+  <script src="js/views/home.js"></script>
+  <script src="js/views/product.js"></script>
+  <script src="js/views/cart.js"></script>
+  <script src="js/views/favorites.js"></script>
+  <script src="js/views/login.js"></script>
+  <script src="js/views/quiz.js"></script>
 
-<!-- Shared Scripts -->
-
-<script src="js/data.js"></script>
-<script src="js/cart.js"></script>
-<script src="js/router.js"></script>
-<script src="js/auth-api.js"></script>
-<script src="js/auth-store.js"></script>
-<script src="js/favorites-store.js"></script>
-<script src="js/questionnaire-api.js"></script>
-
-<!-- Views -->
-
-<script src="js/views/home.js"></script>
-<script src="js/views/product.js"></script>
-<script src="js/views/favorites.js"></script>
-<script src="js/views/questionnaire.js"></script>
-<script src="js/views/register.js"></script>
-<script src="js/views/login.js"></script>
-<script src="js/views/forgot-password.js"></script>
-
-<!-- Main -->
-
-<script src="js/main.js"></script>
+  <!-- Entry point: builds the chrome and starts the router -->
+  <script src="js/main.js"></script>
 
 </body>
 </html>
