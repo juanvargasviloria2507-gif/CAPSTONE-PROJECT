@@ -1,94 +1,201 @@
-/* views/forgot-password.js
-   -----------------------------------------------------------------
-   Autor: Jaider B
-   HU: "Recuperar contraseña" (link "¿Olvidaste tu contraseña?" del login)
-   -----------------------------------------------------------------
-
-   Tareas cubiertas:
-   [x] Formulario de recuperación (solo email)
-   [x] Validar formato del correo
-   [x] Consumir la API de recuperación (mock, ver js/auth-api.js)
-   [x] Mostrar mensaje de éxito ("revisa tu correo")
-   [x] Volver al login
-
-   Mismo lenguaje visual que register.js / login.js (input con icono,
-   auth-card). No se cambia el diseño principal del sitio.
-*/
+/* ======================================================
+   FORGOT PASSWORD VIEW
+   The Ideal Option
+====================================================== */
 
 function renderForgotPassword(container) {
+
   container.innerHTML =
+
     '<div class="auth-page">' +
+
       '<div class="auth-card" id="forgot-card">' +
-        '<h1>¿Olvidaste tu contraseña?</h1>' +
-        '<p class="auth-subtitle">Ingresa tu correo y te enviaremos un mensaje para restablecer tu contraseña.</p>' +
+
+        '<h1>Forgot Your Password?</h1>' +
+
+        '<p class="auth-subtitle">' +
+          'Enter your email address and we will send you instructions to reset your password.' +
+        '</p>' +
 
         '<form id="forgot-form" novalidate>' +
+
           '<div class="form-group">' +
-            '<label for="forgot-email">Correo electrónico</label>' +
+
+            '<label for="forgot-email">Email Address</label>' +
+
             '<div class="input-icon-wrap">' +
+
               ICONS.mail +
-              '<input type="email" id="forgot-email" name="email" autocomplete="email" placeholder="Ingresa tu correo electrónico">' +
+
+              '<input ' +
+                'type="email" ' +
+                'id="forgot-email" ' +
+                'name="email" ' +
+                'autocomplete="email" ' +
+                'placeholder="Enter your email">' +
+
             '</div>' +
+
             '<span class="form-error" id="err-forgot-email"></span>' +
+
           '</div>' +
 
-          '<button type="submit" class="btn btn-primary auth-submit" id="forgot-submit">Enviar</button>' +
+          '<button ' +
+            'type="submit" ' +
+            'class="btn btn-primary auth-submit" ' +
+            'id="forgot-submit">' +
+
+            'Send Reset Link' +
+
+          '</button>' +
+
         '</form>' +
 
-        '<p class="auth-switch"><a id="back-to-login">' + ICONS.back + ' Volver a inicio de sesión</a></p>' +
+        '<p class="auth-switch">' +
+
+          '<a id="back-to-login">' +
+
+            ICONS.back +
+
+            ' Back to Sign In' +
+
+          '</a>' +
+
+        '</p>' +
+
       '</div>' +
+
     '</div>';
 
+
+
   var form = container.querySelector('#forgot-form');
+
   var submitBtn = container.querySelector('#forgot-submit');
 
+
+
   form.addEventListener('submit', function (e) {
+
     e.preventDefault();
+
     handleForgotSubmit(container, form, submitBtn);
+
   });
+
+
 
   container.querySelector('#back-to-login').addEventListener('click', function () {
+
     Router.navigate('/login');
+
   });
+
 }
 
-// Jaider B — Tareas: "Validar formato del correo", "Consumir la API de recuperación", "Mostrar mensaje de éxito"
+
+
+/* ======================================================
+   HANDLE RESET REQUEST
+====================================================== */
+
 function handleForgotSubmit(container, form, submitBtn) {
+
   var errEl = container.querySelector('#err-forgot-email');
+
   var email = form.email.value.trim();
 
   errEl.textContent = '';
+
   form.email.classList.remove('input-error');
 
+
+
   if (!email) {
-    errEl.textContent = 'Ingresa tu correo electrónico.';
+
+    errEl.textContent = 'Please enter your email address.';
+
     form.email.classList.add('input-error');
+
     return;
+
   }
+
+
+
   if (!EMAIL_REGEX.test(email)) {
-    errEl.textContent = 'Ingresa un correo electrónico válido.';
+
+    errEl.textContent = 'Please enter a valid email address.';
+
     form.email.classList.add('input-error');
+
     return;
+
   }
+
+
 
   submitBtn.disabled = true;
-  submitBtn.textContent = 'Enviando...';
 
-  requestPasswordReset(email).then(function () {
-    renderForgotSuccess(container, email);
-  });
+  submitBtn.textContent = 'Sending...';
+
+
+
+  requestPasswordReset(email)
+
+    .then(function () {
+
+      renderForgotSuccess(container, email);
+
+    });
+
 }
 
-// Jaider B — Tarea: "Mostrar mensaje de éxito" + "Volver al login"
+
+
+/* ======================================================
+   SUCCESS SCREEN
+====================================================== */
+
 function renderForgotSuccess(container, email) {
+
   var card = container.querySelector('#forgot-card');
+
+
+
   card.innerHTML =
-    '<div class="auth-success-icon">' + ICONS.mail + '</div>' +
-    '<h1>Revisa tu correo</h1>' +
-    '<p class="auth-subtitle">Si <strong>' + email + '</strong> está registrado, te enviamos un enlace para restablecer tu contraseña.</p>' +
-    '<button type="button" class="btn btn-primary auth-submit" id="forgot-back-btn">Volver a inicio de sesión</button>';
+
+    '<div class="auth-success-icon">' +
+
+      ICONS.mail +
+
+    '</div>' +
+
+    '<h1>Check Your Email</h1>' +
+
+    '<p class="auth-subtitle">' +
+
+      'If <strong>' + email + '</strong> is registered, you will receive a password reset link shortly.' +
+
+    '</p>' +
+
+    '<button ' +
+
+      'type="button" ' +
+
+      'class="btn btn-primary auth-submit" ' +
+
+      'id="forgot-back-btn">' +
+
+      'Back to Sign In' +
+
+    '</button>';
+
+
 
   card.querySelector('#forgot-back-btn').addEventListener('click', function () {
+
     Router.navigate('/login');
+
   });
-}
+};
