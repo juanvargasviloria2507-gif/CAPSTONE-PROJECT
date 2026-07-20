@@ -16,33 +16,205 @@ var ICONS = {
 
 /* Categories used by the nav and as a filter for the product grid */
 var CATEGORIES = [
-  { label: 'All gifts', slug: '' },
-  { label: 'Birthday', slug: 'birthday' },
-  { label: 'Anniversary', slug: 'anniversary' },
-  { label: 'Holidays', slug: 'holiday' },
-  { label: 'Personalized', slug: 'personalized' },
-  { label: 'Jewelry', slug: 'jewelry' },
-  { label: 'Home & decor', slug: 'home' }
+  { label: "All Jeans", slug: "" },
+  { label: "Skinny", slug: "skinny" },
+  { label: "Mom Fit", slug: "mom-fit" },
+  { label: "Straight", slug: "straight" },
+  { label: "Wide Leg", slug: "wide-leg" },
+  { label: "Bootcut", slug: "bootcut" },
+  { label: "Favorites", slug: "favorites" }
 ];
 
 var TAG_LABELS = {
-  personalized: 'personalized',
-  jewelry: 'jewelry',
-  home: 'home',
-  birthday: 'birthday',
-  anniversary: 'anniversary',
-  holiday: 'holiday'
+  "skinny": "Skinny",
+  "mom-fit": "Mom Fit",
+  "straight": "Straight",
+  "wide-leg": "Wide Leg",
+  "bootcut": "Bootcut"
 };
 
 var PRODUCTS = [
-  { id: 'classic-denim', name: 'Classic Denim Collection', desc: 'Curated stack of premium washed denim jeans in various tones', rating: 4.8, price: 89.99, tag: 'personalized', photo: true },
-  { id: 'distressed-wide-leg', name: 'Distressed Wide Leg Jeans', desc: 'Textured wide-leg denim with embroidered details, light wash', rating: 4.9, price: 119.99, tag: 'jewelry', photo: true },
-  { id: 'flare-jean', name: 'The Flare Jean', desc: 'Distinctive flare cut in soft light-blue wash, elegant and effortless', rating: 4.7, price: 99.99, tag: 'home', photo: false },
-  { id: 'wide-leg-edit', name: 'Wide Leg Edit', desc: 'Dark indigo wide-leg jeans with a clean, structured silhouette', rating: 4.5, price: 109.99, tag: 'birthday', photo: true },
-  { id: 'denim-midi-skirt', name: 'Denim Midi Skirt', desc: 'High-waisted midi skirt in light wash denim with a front slit', rating: 4.9, price: 79.99, tag: 'anniversary', photo: false },
-  { id: 'distressed-shorts', name: 'Distressed Denim Shorts', desc: 'Acid-wash shorts with a raw hem and ripped details', rating: 4.6, price: 59.99, tag: 'holiday', photo: false },
-  { id: 'custom-necklace', name: 'Custom Name Necklace', desc: 'Gold-plated necklace with a personalized name', rating: 4.8, price: 79.99, tag: 'jewelry', photo: true },
-  { id: 'succulent-kit', name: 'Succulent Garden Kit', desc: 'Complete kit to grow your own succulent garden', rating: 4.7, price: 34.99, tag: 'home', photo: true }
+
+{
+    id: "skinny-black",
+    name: "Black Skinny Jeans",
+    desc: "Classic high-waisted skinny jeans with stretch fabric.",
+    rating: 4.8,
+    price: 69.99,
+    tag: "skinny",
+    color: "black",
+    fit: "Skinny",
+    sizes: ["XS","S","M","L","XL"],
+    image: "assets/products/skinny-black.jpg",
+    photo: true,
+    style: "trendy"
+},
+
+{
+    id: "mom-light",
+    name: "Light Blue Mom Jeans",
+    desc: "Relaxed vintage fit perfect for everyday outfits.",
+    rating: 4.9,
+    price: 79.99,
+    tag: "mom-fit",
+    color: "dark",
+    fit: "Mom Fit",
+    sizes: ["XS","S","M","L"],
+    image: "assets/products/mom-light.jpg",
+    photo: true,
+    style: "trendy"
+},
+
+{
+    id: "straight-blue",
+    name: "Straight Blue Jeans",
+    desc: "Timeless straight-leg jeans with premium denim.",
+    rating: 4.7,
+    price: 74.99,
+    tag: "straight",
+    color: "ligth",
+    fit: "Straight",
+    sizes: ["S","M","L","XL"],
+    image: "assets/products/straight-blue.jpg",
+    photo: true,
+    style: "comfort"
+},
+
+{
+    id: "wide-dark",
+    name: "Dark Wide Leg Jeans",
+    desc: "Wide leg silhouette with soft premium fabric.",
+    rating: 4.9,
+    price: 84.99,
+    tag: "wide-leg",
+    color: "dark",
+    fit: "Wide Leg",
+    sizes: ["XS","S","M","L"],
+    image: "assets/products/wide-dark.jpg",
+    photo: true,
+    style: "comfort"
+},
+
+{
+    id: "bootcut-classic",
+    name: "Classic Bootcut Jeans",
+    desc: "Elegant bootcut jeans designed for every occasion.",
+    rating: 4.6,
+    price: 72.99,
+    tag: "bootcut",
+    color: "black",
+    fit: "Bootcut",
+    sizes: ["S","M","L","XL"],
+    image: "assets/products/bootcut.jpg",
+    photo: true,
+    style: "everyday"
+},
+
+{
+    id: "skinny-white",
+    name: "White Skinny Jeans",
+    desc: "Modern skinny jeans with soft stretch denim.",
+    rating: 4.8,
+    price: 67.99,
+    tag: "skinny",
+    color: "dark",
+    fit: "Skinny",
+    sizes: ["XS","S","M","L"],
+    image: "assets/products/skinny-white.jpg",
+    photo: true,
+    style: "everyday"
+},
+
+{
+    id: "mom-dark",
+    name: "Dark Mom Jeans",
+    desc: "High-rise mom jeans with vintage wash.",
+    rating: 4.7,
+    price: 81.99,
+    tag: "mom-fit",
+    color: "light",
+    fit: "Mom Fit",
+    sizes: ["XS","S","M","L"],
+    image: "assets/products/mom-dark.jpg",
+    photo: true,
+    style: "premium"
+},
+
+{
+    id: "straight-black",
+    name: "Straight Black Jeans",
+    desc: "Minimalist straight-leg jeans for every style.",
+    rating: 4.9,
+    price: 76.99,
+    tag: "straight",
+    color: "black",
+    fit: "Straight",
+    sizes: ["S","M","L","XL"],
+    image: "assets/products/straight-black.jpg",
+    photo: true,
+    style: "premium"
+},
+
+{
+    id: "wide-light",
+    name: "Light Wide Leg Jeans",
+    desc: "Loose fit with comfortable premium cotton denim.",
+    rating: 4.8,
+    price: 86.99,
+    tag: "wide-leg",
+    color: "light",
+    fit: "Wide Leg",
+    sizes: ["XS","S","M","L"],
+    image: "assets/products/wide-light.jpg",
+    photo: true,
+    style: "premium"
+},
+
+{
+    id: "bootcut-dark",
+    name: "Dark Bootcut Jeans",
+    desc: "Classic bootcut jeans with elegant finish.",
+    rating: 4.7,
+    price: 75.99,
+    tag: "bootcut",
+    color: "dark",
+    fit: "Bootcut",
+    sizes: ["S","M","L","XL"],
+    image: "assets/products/bootcut-dark.jpg",
+    photo: true,
+    style: "everyday"
+},
+
+{
+    id: "relaxed-fit",
+    name: "Relaxed Fit Jeans",
+    desc: "Comfortable relaxed fit with modern design.",
+    rating: 4.8,
+    price: 79.99,
+    tag: "straight",
+    color: "light",
+    fit: "Relaxed",
+    sizes: ["S","M","L","XL"],
+    image: "assets/products/relaxed.jpg",
+    photo: true,
+    style: "everyday"
+},
+
+{
+    id: "vintage-denim",
+    name: "Vintage Denim Jeans",
+    desc: "Inspired by classic denim styles with premium quality.",
+    rating: 5.0,
+    price: 89.99,
+    tag: "mom-fit",
+    color: "black",
+    fit: "Vintage",
+    sizes: ["XS","S","M","L"],
+    image: "assets/products/vintage.jpg",
+    photo: true,
+    style: "trendy"
+}
+
 ];
 
 function findProductById(id) {

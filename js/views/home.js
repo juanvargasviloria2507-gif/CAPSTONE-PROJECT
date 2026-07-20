@@ -10,7 +10,7 @@ function renderHome(container, params) {
     : PRODUCTS;
 
   var categoryLabel = CATEGORIES.find(function (c) { return c.slug === categorySlug; });
-  var heading = categoryLabel ? categoryLabel.label : 'All gifts';
+  var heading = categoryLabel ? categoryLabel.label : 'All Jeans';
 
   container.innerHTML =
     '<section class="hero">' +
@@ -20,7 +20,7 @@ function renderHome(container, params) {
         '<p>Discover unique, thoughtfully chosen gifts that will make your loved ones smile. From personalized treasures to timeless classics, we have something special for everyone.</p>' +
         '<div class="hero-actions">' +
           '<button class="btn btn-primary" id="shop-now-btn">Shop now</button>' +
-          '<button class="btn btn-secondary">Gift guide</button>' +
+          '<button class="btn btn-secondary">Find My Fit</button>' +
         '</div>' +
       '</div>' +
       '<div class="hero-visual">' +
