@@ -20,7 +20,7 @@ function renderHome(container, params) {
         '<p>Discover unique, thoughtfully chosen gifts that will make your loved ones smile. From personalized treasures to timeless classics, we have something special for everyone.</p>' +
         '<div class="hero-actions">' +
           '<button class="btn btn-primary" id="shop-now-btn">Shop now</button>' +
-          '<button class="btn btn-secondary">Find My Fit</button>' +
+          '<button class="btn btn-secondary" id="find-fit-btn">Find My Fit</button>' +
         '</div>' +
       '</div>' +
       '<div class="hero-visual">' +
@@ -47,6 +47,10 @@ function renderHome(container, params) {
 
   container.querySelector('#shop-now-btn').addEventListener('click', function () {
     container.querySelector('#products-section').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  container.querySelector('#find-fit-btn').addEventListener('click', function () {
+    Router.navigate('/quiz');
   });
 
   wireProductGrid(grid);

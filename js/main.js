@@ -117,6 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
   Router.register('/cart', renderCart);
   Router.register('/favorites', renderFavorites);
   Router.register('/login', renderLogin);
+  Router.register('/quiz', renderQuiz);
 
   Router.init(document.getElementById('app'));
 });
