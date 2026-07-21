@@ -9,7 +9,7 @@ const pool = require('../../db');
 
 const getAllProducts = async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT id, name, image, price FROM products');
+        const [rows] = await pool.query('SELECT id, name, description, image, price, fit_tag FROM products');
         res.status(200).send(rows);
     } catch (error) {
         console.error(error);

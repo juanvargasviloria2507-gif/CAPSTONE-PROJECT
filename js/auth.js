@@ -1,44 +1,28 @@
 /* auth.js
-   Simple client-side authentication store. There is no backend in
-   this project, so "accounts" are just entries persisted to
-   localStorage. Passwords are lightly obfuscated (a basic string
-   hash, NOT a real cryptographic algorithm) purely so they aren't
-   sitting in localStorage as plain readable text — this is demo-only
-   and should never be used as-is for a product handling real users
-   or real passwords.
+   Client-side authentication store, connected to the real backend.
+   login/register call the API; the rest read the cached session
+   from localStorage so the UI (header, guards) stays synchronous.
 */
 
 var AuthStore = (function () {
-  var USERS_KEY = 'gifthub_users';
-  var SESSION_KEY = 'gifthub_session';
+  var API_URL = 'http://localhost:3000';
+  var TOKEN_KEY = 'gifthub_token';
+  var USER_KEY = 'gifthub_user';
   var listeners = [];
-
-  function obfuscate(str) {
-    var hash = 0;
-    for (var i = 0; i < str.length; i++) {
-      hash = ((hash << 5) - hash + str.charCodeAt(i)) | 0;
-    }
-    return 'h' + hash;
-  }
-
-  function loadUsers() {
-    try {
-      return JSON.parse(localStorage.getItem(USERS_KEY)) || {};
-    } catch (e) {
-      return {};
-    }
-  }
-
-  function saveUsers(users) {
-    try { localStorage.setItem(USERS_KEY, JSON.stringify(users)); } catch (e) {}
-  }
 
   function notify() {
     var user = getCurrentUser();
     listeners.forEach(function (fn) { fn(user); });
   }
 
-  function register(name, email, password) {
+  function saveSession(token, user) {
+    try {
+      localStorage.setItem(TOKEN_KEY, token);
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+    } catch (e) {}
+  }
+
+  async function register(name, email, password) {
     name = (name || '').trim();
     email = (email || '').trim().toLowerCase();
     password = password || '';
@@ -53,48 +37,68 @@ var AuthStore = (function () {
       return { ok: false, error: 'Password must be at least 6 characters.' };
     }
 
-    var users = loadUsers();
-    if (users[email]) {
-      return { ok: false, error: 'An account with that email already exists.' };
-    }
+    try {
+      var response = await fetch(API_URL + '/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, email: email, password: password })
+      });
+      var data = await response.json();
 
-    users[email] = { name: name, email: email, passwordHash: obfuscate(password) };
-    saveUsers(users);
-    try { localStorage.setItem(SESSION_KEY, email); } catch (e) {}
-    notify();
-    return { ok: true };
+      if (!response.ok) {
+        return { ok: false, error: data.error || 'Could not create the account.' };
+      }
+
+      // /register doesn't return a token, so log in right after to start the session
+      return await login(email, password);
+    } catch (e) {
+      return { ok: false, error: 'Could not connect to the server.' };
+    }
   }
 
-  function login(email, password) {
+  async function login(email, password) {
     email = (email || '').trim().toLowerCase();
     password = password || '';
 
-    var users = loadUsers();
-    var user = users[email];
-    if (!user || user.passwordHash !== obfuscate(password)) {
-      return { ok: false, error: 'Incorrect email or password.' };
-    }
+    try {
+      var response = await fetch(API_URL + '/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, password: password })
+      });
+      var data = await response.json();
 
-    try { localStorage.setItem(SESSION_KEY, email); } catch (e) {}
-    notify();
-    return { ok: true };
+      if (!response.ok) {
+        return { ok: false, error: data.error || 'Incorrect email or password.' };
+      }
+
+      saveSession(data.token, data.user);
+      notify();
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, error: 'Could not connect to the server.' };
+    }
   }
 
   function logout() {
-    try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
+    try {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+    } catch (e) {}
     notify();
   }
 
   function getCurrentUser() {
-    var email;
-    try { email = localStorage.getItem(SESSION_KEY); } catch (e) { email = null; }
-    if (!email) return null;
+    try {
+      var raw = localStorage.getItem(USER_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  }
 
-    var users = loadUsers();
-    var user = users[email];
-    if (!user) return null;
-
-    return { name: user.name, email: user.email };
+  function getToken() {
+    try { return localStorage.getItem(TOKEN_KEY); } catch (e) { return null; }
   }
 
   function isLoggedIn() {
@@ -110,6 +114,7 @@ var AuthStore = (function () {
     login: login,
     logout: logout,
     getCurrentUser: getCurrentUser,
+    getToken: getToken,
     isLoggedIn: isLoggedIn,
     subscribe: subscribe
   };

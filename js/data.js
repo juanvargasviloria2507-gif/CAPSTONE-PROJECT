@@ -14,212 +14,54 @@ var ICONS = {
   user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>'
 };
 
-/* Categories used by the nav and as a filter for the product grid */
+/* API URL and product catalog. The catalog is loaded from the backend
+   via /products, but we keep a local copy here so the UI can render
+   immediately without waiting for the network. */
+var API_URL = 'http://localhost:3000';
+
 var CATEGORIES = [
   { label: "All Jeans", slug: "" },
   { label: "Skinny", slug: "skinny" },
-  { label: "Mom Fit", slug: "mom-fit" },
-  { label: "Straight", slug: "straight" },
-  { label: "Wide Leg", slug: "wide-leg" },
-  { label: "Bootcut", slug: "bootcut" },
+  { label: "Wide Leg", slug: "wide" },
+  { label: "Flare", slug: "flare" },
+  { label: "Shorts", slug: "shorts" },
   { label: "Favorites", slug: "favorites" }
 ];
 
 var TAG_LABELS = {
-  "skinny": "Skinny",
-  "mom-fit": "Mom Fit",
-  "straight": "Straight",
-  "wide-leg": "Wide Leg",
-  "bootcut": "Bootcut"
+  skinny: "Skinny",
+  wide: "Wide Leg",
+  flare: "Flare",
+  shorts: "Shorts"
 };
 
-var PRODUCTS = [
+var PRODUCTS = [];
 
-{
-    id: "skinny-black",
-    name: "Black Skinny Jeans",
-    desc: "Classic high-waisted skinny jeans with stretch fabric.",
-    rating: 4.8,
-    price: 69.99,
-    tag: "skinny",
-    color: "black",
-    fit: "Skinny",
-    sizes: ["XS","S","M","L","XL"],
-    image: "assets/products/skinny-black.jpg",
-    photo: true,
-    style: "trendy"
-},
+async function loadProducts() {
+  try {
+    var response = await fetch(API_URL + '/products');
+    var data = await response.json();
 
-{
-    id: "mom-light",
-    name: "Light Blue Mom Jeans",
-    desc: "Relaxed vintage fit perfect for everyday outfits.",
-    rating: 4.9,
-    price: 79.99,
-    tag: "mom-fit",
-    color: "dark",
-    fit: "Mom Fit",
-    sizes: ["XS","S","M","L"],
-    image: "assets/products/mom-light.jpg",
-    photo: true,
-    style: "trendy"
-},
-
-{
-    id: "straight-blue",
-    name: "Straight Blue Jeans",
-    desc: "Timeless straight-leg jeans with premium denim.",
-    rating: 4.7,
-    price: 74.99,
-    tag: "straight",
-    color: "ligth",
-    fit: "Straight",
-    sizes: ["S","M","L","XL"],
-    image: "assets/products/straight-blue.jpg",
-    photo: true,
-    style: "comfort"
-},
-
-{
-    id: "wide-dark",
-    name: "Dark Wide Leg Jeans",
-    desc: "Wide leg silhouette with soft premium fabric.",
-    rating: 4.9,
-    price: 84.99,
-    tag: "wide-leg",
-    color: "dark",
-    fit: "Wide Leg",
-    sizes: ["XS","S","M","L"],
-    image: "assets/products/wide-dark.jpg",
-    photo: true,
-    style: "comfort"
-},
-
-{
-    id: "bootcut-classic",
-    name: "Classic Bootcut Jeans",
-    desc: "Elegant bootcut jeans designed for every occasion.",
-    rating: 4.6,
-    price: 72.99,
-    tag: "bootcut",
-    color: "black",
-    fit: "Bootcut",
-    sizes: ["S","M","L","XL"],
-    image: "assets/products/bootcut.jpg",
-    photo: true,
-    style: "everyday"
-},
-
-{
-    id: "skinny-white",
-    name: "White Skinny Jeans",
-    desc: "Modern skinny jeans with soft stretch denim.",
-    rating: 4.8,
-    price: 67.99,
-    tag: "skinny",
-    color: "dark",
-    fit: "Skinny",
-    sizes: ["XS","S","M","L"],
-    image: "assets/products/skinny-white.jpg",
-    photo: true,
-    style: "everyday"
-},
-
-{
-    id: "mom-dark",
-    name: "Dark Mom Jeans",
-    desc: "High-rise mom jeans with vintage wash.",
-    rating: 4.7,
-    price: 81.99,
-    tag: "mom-fit",
-    color: "light",
-    fit: "Mom Fit",
-    sizes: ["XS","S","M","L"],
-    image: "assets/products/mom-dark.jpg",
-    photo: true,
-    style: "premium"
-},
-
-{
-    id: "straight-black",
-    name: "Straight Black Jeans",
-    desc: "Minimalist straight-leg jeans for every style.",
-    rating: 4.9,
-    price: 76.99,
-    tag: "straight",
-    color: "black",
-    fit: "Straight",
-    sizes: ["S","M","L","XL"],
-    image: "assets/products/straight-black.jpg",
-    photo: true,
-    style: "premium"
-},
-
-{
-    id: "wide-light",
-    name: "Light Wide Leg Jeans",
-    desc: "Loose fit with comfortable premium cotton denim.",
-    rating: 4.8,
-    price: 86.99,
-    tag: "wide-leg",
-    color: "light",
-    fit: "Wide Leg",
-    sizes: ["XS","S","M","L"],
-    image: "assets/products/wide-light.jpg",
-    photo: true,
-    style: "premium"
-},
-
-{
-    id: "bootcut-dark",
-    name: "Dark Bootcut Jeans",
-    desc: "Classic bootcut jeans with elegant finish.",
-    rating: 4.7,
-    price: 75.99,
-    tag: "bootcut",
-    color: "dark",
-    fit: "Bootcut",
-    sizes: ["S","M","L","XL"],
-    image: "assets/products/bootcut-dark.jpg",
-    photo: true,
-    style: "everyday"
-},
-
-{
-    id: "relaxed-fit",
-    name: "Relaxed Fit Jeans",
-    desc: "Comfortable relaxed fit with modern design.",
-    rating: 4.8,
-    price: 79.99,
-    tag: "straight",
-    color: "light",
-    fit: "Relaxed",
-    sizes: ["S","M","L","XL"],
-    image: "assets/products/relaxed.jpg",
-    photo: true,
-    style: "everyday"
-},
-
-{
-    id: "vintage-denim",
-    name: "Vintage Denim Jeans",
-    desc: "Inspired by classic denim styles with premium quality.",
-    rating: 5.0,
-    price: 89.99,
-    tag: "mom-fit",
-    color: "black",
-    fit: "Vintage",
-    sizes: ["XS","S","M","L"],
-    image: "assets/products/vintage.jpg",
-    photo: true,
-    style: "trendy"
+    PRODUCTS = data.map(function (p) {
+      return {
+        id: p.id,
+        name: p.name,
+        desc: p.description,
+        price: parseFloat(p.price),
+        image: p.image,
+        tag: p.fit_tag,
+        photo: true
+      };
+    });
+  } catch (e) {
+    PRODUCTS = [];
+    console.error('Could not load products from the server', e);
+  }
 }
-
-];
 
 function findProductById(id) {
   for (var i = 0; i < PRODUCTS.length; i++) {
-    if (PRODUCTS[i].id === id) return PRODUCTS[i];
+    if (PRODUCTS[i].id == id) return PRODUCTS[i];
   }
   return null;
 }

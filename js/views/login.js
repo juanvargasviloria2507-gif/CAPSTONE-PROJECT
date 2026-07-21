@@ -42,7 +42,7 @@ function renderLogin(container) {
       draw();
     });
 
-    container.querySelector('#auth-form').addEventListener('submit', function (e) {
+    container.querySelector('#auth-form').addEventListener('submit', async function (e) {
       e.preventDefault();
       var errorEl = container.querySelector('#auth-error');
       errorEl.style.display = 'none';
@@ -53,7 +53,7 @@ function renderLogin(container) {
 
       if (mode === 'register') {
         var name = container.querySelector('#auth-name').value;
-        result = AuthStore.register(name, email, password);
+        result = await AuthStore.register(name, email, password);
       } else {
         result = AuthStore.login(email, password);
       }

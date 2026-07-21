@@ -23,7 +23,6 @@ function renderProduct(container, params) {
         '</div>' +
         '<div class="detail-info">' +
           '<h1>' + product.name + '</h1>' +
-          '<div class="product-rating"><span class="stars">' + renderStars(product.rating) + '</span><span>(' + product.rating + ')</span></div>' +
           '<p class="desc">' + product.desc + '</p>' +
           '<span class="product-price">$' + product.price.toFixed(2) + '</span>' +
           '<div class="detail-actions">' +

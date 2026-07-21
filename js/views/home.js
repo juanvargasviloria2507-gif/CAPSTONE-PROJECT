@@ -66,7 +66,6 @@ function renderProductCard(p) {
       '<button type="button" class="fav-btn ' + (isFav ? 'active' : '') + '" data-fav-toggle="' + p.id + '" aria-label="Toggle favorite">' + ICONS.heart + '</button>' +
       '<div class="product-name" data-goto-product="' + p.id + '">' + p.name + '</div>' +
       '<div class="product-desc">' + p.desc + '</div>' +
-      '<div class="product-rating"><span class="stars">' + renderStars(p.rating) + '</span><span>(' + p.rating + ')</span></div>' +
       '<div class="product-meta">' +
         '<span class="product-price">$' + p.price.toFixed(2) + '</span>' +
         '<span class="product-tag">' + TAG_LABELS[p.tag] + '</span>' +

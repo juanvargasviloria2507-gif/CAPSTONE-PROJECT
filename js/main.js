@@ -106,7 +106,8 @@ function updateActiveNavFromHash() {
   renderNav(match ? match[1] : '');
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
+  await loadProducts();
   renderHeader();
   updateActiveNavFromHash();
   window.addEventListener('hashchange', updateActiveNavFromHash);
