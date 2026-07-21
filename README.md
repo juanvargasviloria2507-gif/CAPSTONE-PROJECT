@@ -101,6 +101,12 @@ CAPSTONE_PROJECT/
 - **dotenv**: Environment variable management
 - **CORS**: Cross-Origin Resource Sharing middleware
 
+### Development & Deployment Tools
+- **MySQL Workbench**: Database administration and visual schema design
+- **Thunder Client**: API testing and debugging for backend endpoints
+- **Railway**: Cloud deployment platform for hosting the backend server
+- **Draw.io**: Architecture and database diagram design for planning
+
 ## Installation & Setup
 
 ### Prerequisites
