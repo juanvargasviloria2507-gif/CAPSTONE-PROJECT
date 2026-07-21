@@ -55,7 +55,7 @@ function renderLogin(container) {
         var name = container.querySelector('#auth-name').value;
         result = await AuthStore.register(name, email, password);
       } else {
-        result = AuthStore.login(email, password);
+        result = await AuthStore.login(email, password);
       }
 
       if (!result.ok) {
