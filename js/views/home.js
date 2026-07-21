@@ -16,8 +16,8 @@ function renderHome(container, params) {
     '<section class="hero">' +
       '<div class="hero-copy">' +
         '<span class="hero-kicker">Handpicked, since forever</span>' +
-        '<h1>Find the perfect pants for every occasion</h1>' +
-        '<p>Discover unique, thoughtfully chosen gifts that will make your loved ones smile. From personalized treasures to timeless classics, we have something special for everyone.</p>' +
+        '<h1>Find the perfect pair for every occasion</h1>' +
+        '<p>Discover jeans that actually fit — from everyday skinny to relaxed wide leg, each pair chosen with the same care as the first. No trends, just denim that lasts.</p>' + 
         '<div class="hero-actions">' +
           '<button class="btn btn-primary" id="shop-now-btn">Shop now</button>' +
           '<button class="btn btn-secondary" id="find-fit-btn">Find My Fit</button>' +
@@ -61,7 +61,7 @@ function renderProductCard(p) {
   return (
     '<div class="product-card">' +
       '<div class="product-thumb ' + (p.photo ? 'photo' : '') + '" data-goto-product="' + p.id + '">' +
-        (p.photo ? '' : ICONS.placeholder) +
+        (p.photo ? '<img src="' + p.image + '" alt="' + p.name + '" class="product-thumb-img">' : ICONS.placeholder) +
       '</div>' +
       '<button type="button" class="fav-btn ' + (isFav ? 'active' : '') + '" data-fav-toggle="' + p.id + '" aria-label="Toggle favorite">' + ICONS.heart + '</button>' +
       '<div class="product-name" data-goto-product="' + p.id + '">' + p.name + '</div>' +
@@ -107,13 +107,14 @@ function wireProductGrid(grid) {
    guests are sent to the login page instead. btnEl (optional) gets
    its "active" class flipped immediately so the heart updates without
    a full re-render. */
-function handleFavoriteToggle(productId, btnEl) {
+async function handleFavoriteToggle(productId, btnEl) {
   if (!AuthStore.isLoggedIn()) {
     showToast('Log in to save favorites');
     Router.navigate('/login');
     return;
   }
-  FavoritesStore.toggle(productId);
+  var changed = await FavoritesStore.toggle(productId);
+  if (!changed) return;
   var nowFav = FavoritesStore.isFavorite(productId);
   if (btnEl) btnEl.classList.toggle('active', nowFav);
   showToast(nowFav ? 'Added to favorites' : 'Removed from favorites');

@@ -1,50 +1,33 @@
 /* reviews.js
-   Per-product review state. Persists to localStorage so reviews
-   survive page reloads. Includes a few seed reviews the first time
-   the app loads, for demo purposes only.
+   Per-product review state, connected to the real backend. Keeps a
+   local cache per product id so getReviews/getAverage can stay
+   synchronous for rendering, refreshed via fetchReviews.
 */
 
 var ReviewStore = (function () {
-  var STORAGE_KEY = 'gifthub_reviews';
+  var API_URL = 'http://localhost:3000';
+  var cache = {}; // productId -> array of reviews
 
-  var SEED_REVIEWS = {
-    'classic-denim': [
-      { name: 'Ana G.', rating: 5, comment: 'The denim quality exceeded my expectations, looks premium.' },
-      { name: 'Marcos R.', rating: 4, comment: 'Great fit and finish, took a few days to arrive.' }
-    ],
-    'custom-necklace': [
-      { name: 'Valentina P.', rating: 5, comment: 'Perfect gift, the name engraving turned out beautiful.' }
-    ],
-    'succulent-kit': [
-      { name: 'Diego M.', rating: 5, comment: 'Arrived well packaged, the succulents were in great condition.' }
-    ]
-  };
-
-  function load() {
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) return JSON.parse(raw);
-    } catch (e) {}
-    // First load: seed with example data and persist it
-    var seeded = JSON.parse(JSON.stringify(SEED_REVIEWS));
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(seeded)); } catch (e) {}
-    return seeded;
+  function authHeaders() {
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + AuthStore.getToken()
+    };
   }
 
-  var data = load();
-
-  function save() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
+  async function fetchReviews(productId) {
+    try {
+      var response = await fetch(API_URL + '/products/' + productId + '/reviews');
+      var data = await response.json();
+      cache[productId] = response.ok ? data : [];
+    } catch (e) {
+      cache[productId] = [];
+    }
+    return cache[productId];
   }
 
   function getReviews(productId) {
-    return (data[productId] || []).slice();
-  }
-
-  function addReview(productId, review) {
-    if (!data[productId]) data[productId] = [];
-    data[productId].push(review);
-    save();
+    return (cache[productId] || []).slice();
   }
 
   function getAverage(productId) {
@@ -54,9 +37,31 @@ var ReviewStore = (function () {
     return sum / reviews.length;
   }
 
+  /* review: { rating, comment }. Requires a logged-in user — the
+     backend derives the reviewer's name from the auth token. */
+  async function addReview(productId, review) {
+    try {
+      var response = await fetch(API_URL + '/products/' + productId + '/reviews', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ rating: review.rating, comment: review.comment })
+      });
+      var data = await response.json();
+
+      if (!response.ok) {
+        return { ok: false, error: data.error || 'Could not post the review.' };
+      }
+      await fetchReviews(productId);
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, error: 'Could not connect to the server.' };
+    }
+  }
+
   return {
+    fetchReviews: fetchReviews,
     getReviews: getReviews,
-    addReview: addReview,
-    getAverage: getAverage
+    getAverage: getAverage,
+    addReview: addReview
   };
 })();

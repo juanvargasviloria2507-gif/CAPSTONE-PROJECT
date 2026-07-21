@@ -57,7 +57,7 @@ const getFavorites = async (req, res) => {
         const userId = req.userId; // Extracted from the token by auth middleware
 
         const [rows] = await pool.query(
-            `SELECT products.id, products.name, products.image, products.price, products.description
+            `SELECT products.id, products.name, products.image, products.price, products.description, products.fit_tag
             FROM favorites
             JOIN products ON favorites.product_id = products.id
             WHERE favorites.user_id = ?

@@ -5,11 +5,15 @@
 */
 
 function renderFavorites(container) {
+  if (renderFavorites._unsubscribe) {
+    renderFavorites._unsubscribe();
+    renderFavorites._unsubscribe = null;
+  }
   if (!AuthStore.isLoggedIn()) {
     container.innerHTML =
       '<div class="detail">' +
         '<div class="empty-state">' +
-          'Log in to see the gifts you\'ve saved.<br>' +
+          'Log in to see the jeans you\'ve saved.<br>' +
           '<button class="btn btn-primary" id="fav-login-btn" style="margin-top:16px">Log in</button>' +
         '</div>' +
       '</div>';
@@ -42,9 +46,8 @@ function renderFavorites(container) {
   // Unlike the home grid, removing a favorite here should make its
   // card disappear immediately, so re-render the whole view whenever
   // a favorite is toggled off from this page.
-  grid.querySelectorAll('[data-fav-toggle]').forEach(function (el) {
-    el.addEventListener('click', function () {
-      renderFavorites(container);
-    });
+  renderFavorites._unsubscribe = FavoritesStore.subscribe(function () {
+    renderFavorites(container);
   });
-}
+};
+

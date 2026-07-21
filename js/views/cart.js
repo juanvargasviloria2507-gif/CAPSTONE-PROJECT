@@ -10,7 +10,7 @@ function renderCart(container) {
   if (items.length === 0) {
     container.innerHTML =
       '<div class="detail">' +
-        '<a class="back-link" id="back-link">' + ICONS.back + ' Keep browsing gifts</a>' +
+        '<a class="back-link" id="back-link">' + ICONS.back + ' Keep browsing jeans</a>' +
         '<div class="empty-state">Your cart is empty.</div>' +
       '</div>';
     container.querySelector('#back-link').addEventListener('click', function () {
@@ -21,7 +21,7 @@ function renderCart(container) {
 
   container.innerHTML =
     '<div class="detail">' +
-      '<a class="back-link" id="back-link">' + ICONS.back + ' Keep browsing gifts</a>' +
+      '<a class="back-link" id="back-link">' + ICONS.back + ' Keep browsing jeans</a>' +
       '<div class="cart-view">' +
         '<h1>Your cart</h1>' +
         '<div class="cart-list">' +
@@ -29,7 +29,7 @@ function renderCart(container) {
             return (
               '<div class="cart-row">' +
                 '<div class="cart-row-thumb ' + (product.photo ? 'photo' : '') + '">' +
-                  (product.photo ? '' : ICONS.placeholder) +
+                  (product.photo ? '<img src="' + product.image + '" alt="' + product.name + '" class="cart-row-thumb-img">' : ICONS.placeholder) +
                 '</div>' +
                 '<div class="cart-row-info">' +
                   '<div class="cart-row-name">' + product.name + '</div>' +

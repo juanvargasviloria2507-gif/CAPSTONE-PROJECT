@@ -1,9 +1,12 @@
 /* views/quiz.js
-   "Find My Fit" questionnaire: a short multi-step quiz that scores
-   every product in PRODUCTS against the user's answers and shows the
-   best matches. No backend involved — everything happens in memory,
-   the same way the rest of this demo app works.
+   "Find My Fit" questionnaire, connected to the real backend
+   recommendation engine (POST /recommendations). Fit/color/style
+   option values must match the fit_tag/color_tag/style_tag values
+   stored in your "products" table — check with:
+     SELECT DISTINCT fit_tag, color_tag, style_tag FROM products;
 */
+
+var API_URL_QUIZ = 'http://localhost:3000';
 
 var QUIZ_QUESTIONS = [
   {
@@ -11,11 +14,9 @@ var QUIZ_QUESTIONS = [
     question: 'What fit are you looking for?',
     options: [
       { label: 'Skinny', value: 'skinny' },
-      { label: 'Mom Fit', value: 'mom-fit' },
-      { label: 'Straight', value: 'straight' },
-      { label: 'Wide Leg', value: 'wide-leg' },
-      { label: 'Bootcut', value: 'bootcut' },
-      { label: "I'm open to anything", value: '' }
+      { label: 'Wide Leg', value: 'wide' },
+      { label: 'Flare', value: 'flare' },
+      { label: 'Shorts', value: 'shorts' }
     ]
   },
   {
@@ -25,61 +26,53 @@ var QUIZ_QUESTIONS = [
       { label: 'Trendy & bold', value: 'trendy' },
       { label: 'Comfort first', value: 'comfort' },
       { label: 'Everyday casual', value: 'everyday' },
-      { label: 'Premium & polished', value: 'premium' },
-      { label: 'No preference', value: '' }
+      { label: 'Premium & polished', value: 'premium' }
     ]
   },
   {
     key: 'color',
     question: 'Which wash speaks to you?',
     options: [
-      { label: 'Black', value: 'black' },
       { label: 'Dark wash', value: 'dark' },
       { label: 'Light wash', value: 'light' },
-      { label: 'No preference', value: '' }
-    ]
-  },
-  {
-    key: 'budget',
-    question: "What's your budget?",
-    options: [
-      { label: 'Under $75', value: 'low' },
-      { label: '$75 – $85', value: 'mid' },
-      { label: 'Over $85', value: 'high' },
-      { label: 'No preference', value: '' }
+      { label: 'No preference', value: 'any' }
     ]
   }
 ];
 
-/* Higher score = better match. Each answered question adds weight in
-   proportion to how much it should matter (fit > style > color/budget).
-   A tiny slice of the product rating is added at the end just to break
-   ties in favor of the better-reviewed item. */
-function scoreProductAgainstQuiz(p, answers) {
-  var score = 0;
-
-  if (answers.fit && p.tag === answers.fit) score += 4;
-  if (answers.style && p.style === answers.style) score += 3;
-  if (answers.color && p.color === answers.color) score += 2;
-
-  if (answers.budget) {
-    var inBudget =
-      (answers.budget === 'low' && p.price < 75) ||
-      (answers.budget === 'mid' && p.price >= 75 && p.price <= 85) ||
-      (answers.budget === 'high' && p.price > 85);
-    if (inBudget) score += 2;
-  }
-
-  score += p.rating * 0.1;
-  return score;
+function mapRecommendation(p) {
+  return {
+    id: p.id,
+    name: p.name,
+    desc: p.description,
+    price: parseFloat(p.price),
+    image: p.image,
+    tag: p.fit_tag,
+    photo: true
+  };
 }
 
-function getQuizRecommendations(answers, limit) {
-  var scored = PRODUCTS.map(function (p) {
-    return { product: p, score: scoreProductAgainstQuiz(p, answers) };
-  });
-  scored.sort(function (a, b) { return b.score - a.score; });
-  return scored.slice(0, limit || 3).map(function (s) { return s.product; });
+async function fetchQuizRecommendations(answers) {
+  var headers = { 'Content-Type': 'application/json' };
+  if (AuthStore.isLoggedIn()) {
+    headers['Authorization'] = 'Bearer ' + AuthStore.getToken();
+  }
+
+  try {
+    var response = await fetch(API_URL_QUIZ + '/recommendations', {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(answers)
+    });
+    var data = await response.json();
+
+    if (!response.ok) {
+      return { ok: false, error: data.error || 'Could not get recommendations.' };
+    }
+    return { ok: true, products: data.recommendations.map(mapRecommendation) };
+  } catch (e) {
+    return { ok: false, error: 'Could not connect to the server.' };
+  }
 }
 
 function renderQuiz(container) {
@@ -125,8 +118,16 @@ function renderQuiz(container) {
     }
   }
 
-  function renderResults() {
-    var picks = getQuizRecommendations(answers, 3);
+  async function renderResults() {
+    container.innerHTML =
+      '<div class="quiz-view quiz-results">' +
+        '<div class="quiz-results-header">' +
+          '<span class="hero-kicker">Your matches</span>' +
+          '<h1>Finding your best fits...</h1>' +
+        '</div>' +
+      '</div>';
+
+    var result = await fetchQuizRecommendations(answers);
 
     container.innerHTML =
       '<div class="quiz-view quiz-results">' +
@@ -140,10 +141,12 @@ function renderQuiz(container) {
       '</div>';
 
     var grid = container.querySelector('#quiz-product-grid');
-    if (picks.length === 0) {
+    if (!result.ok) {
+      grid.innerHTML = '<div class="empty-state">' + escapeHtml(result.error) + '</div>';
+    } else if (result.products.length === 0) {
       grid.innerHTML = '<div class="empty-state">No matches yet — try the quiz again with different answers.</div>';
     } else {
-      grid.innerHTML = picks.map(renderProductCard).join('');
+      grid.innerHTML = result.products.map(renderProductCard).join('');
       wireProductGrid(grid);
     }
 
